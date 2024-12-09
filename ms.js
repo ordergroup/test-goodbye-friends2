@@ -1,8 +1,9 @@
+console.log("my script 1");
 document.addEventListener("DOMContentLoaded", async function () {
   // shortens reference to Memberstack
   const memberstack = window.$memberstackDom;
 
-  console.log("my script");
+  console.log("my script 2");
 
   memberstack.getCurrentMember().then(async ({ data: member }) => {
     // if the member is logged in
