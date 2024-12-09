@@ -6,10 +6,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (member) {
       const memberJson = await memberstack.getMemberJSON(member.id);
       console.log(memberJson);
+
       const updatedData = {
         ...memberJson.data,
-        avatarURL: "avatar22.jpg",
+        test: "test.jpg",
       };
+
       console.log(updatedData);
 
       await memberstack.updateMemberJSON({ json: updatedData });
