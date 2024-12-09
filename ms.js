@@ -30,21 +30,41 @@ document.addEventListener("DOMContentLoaded", async function () {
   displayData();
 
   const addListener = async () => {
-    const singleButton = document.getElementById("ms-single-btn");
     const buttonBack = document.getElementById("ms-back-btn");
-    const yesButton = document.getElementById("ms-yes-btn");
 
-    singleButton.addEventListener("click", async () => {
-      const memberJson = await memberstack.getMemberJSON();
+    const step1buttons = document.querySelectorAll("[ms-step-1-button]");
+    const step2buttons = document.querySelectorAll("[ms-step-2-button]");
 
-      const updatedData = {
-        ...memberJson.data,
-        maritalStatus: "single",
-        currentStep: memberJson.data.currentStep + 1,
-      };
+    step1buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const memberJson = await memberstack.getMemberJSON();
 
-      await memberstack.updateMemberJSON({ json: updatedData });
-      displayData();
+        const value = button.getAttribute("ms-step-1-button");
+        const updatedData = {
+          ...memberJson.data,
+          currentStep: memberJson.data.currentStep + 1,
+          maritalStatus: value,
+        };
+
+        await memberstack.updateMemberJSON({ json: updatedData });
+        displayData();
+      });
+    });
+
+    step2buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const memberJson = await memberstack.getMemberJSON();
+
+        const value = button.getAttribute("ms-step-2-button");
+        const updatedData = {
+          ...memberJson.data,
+          currentStep: memberJson.data.currentStep + 1,
+          hasChildren: value,
+        };
+
+        await memberstack.updateMemberJSON({ json: updatedData });
+        displayData();
+      });
     });
 
     buttonBack.addEventListener("click", async () => {
@@ -53,19 +73,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       const updatedData = {
         ...memberJson.data,
         currentStep: memberJson.data.currentStep - 1,
-      };
-
-      await memberstack.updateMemberJSON({ json: updatedData });
-      displayData();
-    });
-
-    yesButton.addEventListener("click", async () => {
-      const memberJson = await memberstack.getMemberJSON();
-
-      const updatedData = {
-        ...memberJson.data,
-        hasChildren: true,
-        currentStep: memberJson.data.currentStep + 1,
       };
 
       await memberstack.updateMemberJSON({ json: updatedData });
