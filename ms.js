@@ -69,10 +69,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     buttonBack.addEventListener("click", async () => {
-      if (memberJson.data.currentStep <= 1) return;
-
       const memberJson = await memberstack.getMemberJSON();
 
+      if (memberJson.data.currentStep <= 1) return;
       const updatedData = {
         ...memberJson.data,
         currentStep: memberJson.data.currentStep - 1,
