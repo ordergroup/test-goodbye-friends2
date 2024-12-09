@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       };
 
       await memberstack.updateMemberJSON({ json: updatedData });
+      displayData();
     });
 
     buttonBack.addEventListener("click", async () => {
@@ -57,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       };
 
       await memberstack.updateMemberJSON({ json: updatedData });
+      displayData();
     });
 
     yesButton.addEventListener("click", async () => {
@@ -69,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       };
 
       await memberstack.updateMemberJSON({ json: updatedData });
+      displayData();
     });
   };
 
