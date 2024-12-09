@@ -14,6 +14,16 @@ document.addEventListener("DOMContentLoaded", async function () {
           const key = element.getAttribute("ms-data-json");
           element.textContent = memberJson.data[key];
         });
+
+        const containers = document.querySelectorAll("[ms-step-container]");
+        containers.forEach((container) => {
+          const step = container.getAttribute("ms-step-container");
+          console.log(step, typeof step, typeof memberJson.data.currentStep);
+          container.style.display = "none";
+          if (memberJson.data.currentStep == step) {
+            container.style.display = "block";
+          }
+        });
       }
     });
   };
@@ -25,16 +35,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const yesButton = document.getElementById("ms-yes-btn");
 
     const memberJson = await memberstack.getMemberJSON();
-
-    const containers = document.querySelectorAll("[ms-step-container]");
-    containers.forEach((container) => {
-      const step = container.getAttribute("ms-step-container");
-      console.log(step, typeof step, typeof memberJson.data.currentStep);
-      container.style.display = "none";
-      if (memberJson.data.currentStep == step) {
-        container.style.display = "block";
-      }
-    });
 
     singleButton.addEventListener("click", async () => {
       const memberJson = await memberstack.getMemberJSON();
