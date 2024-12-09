@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     buttonBack.style.backgroundColor =
-      memberJson.data.currentStep <= 1 ? "gray" : undefined;
+      memberJson.data.currentStep <= 1 ? "gray" : "white";
   };
 
   addListener();
