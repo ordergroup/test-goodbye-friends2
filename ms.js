@@ -31,9 +31,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   const addListener = async () => {
     const buttonBack = document.getElementById("ms-back-btn");
-
     const step1buttons = document.querySelectorAll("[ms-step-1-button]");
     const step2buttons = document.querySelectorAll("[ms-step-2-button]");
+
+    const memberJson = await memberstack.getMemberJSON();
 
     step1buttons.forEach((button) => {
       button.addEventListener("click", async () => {
@@ -78,6 +79,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       await memberstack.updateMemberJSON({ json: updatedData });
       displayData();
     });
+    //disable button if currentStep is 1 or lower
+    buttonBack.disabled = memberJson.data.currentStep <= 1 ? true : false;
   };
 
   addListener();
