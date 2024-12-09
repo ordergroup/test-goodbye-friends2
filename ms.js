@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     buttonBack.addEventListener("click", async () => {
       const memberJson = await memberstack.getMemberJSON();
 
+      if (memberJson.data.currentStep <= 1) return;
       const updatedData = {
         ...memberJson.data,
         currentStep: memberJson.data.currentStep - 1,
@@ -79,8 +80,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       await memberstack.updateMemberJSON({ json: updatedData });
       displayData();
     });
-    //disable button if currentStep is 1 or lower
-    buttonBack.disabled = memberJson.data.currentStep <= 1 ? true : false;
   };
 
   addListener();
