@@ -29,9 +29,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const containers = document.querySelectorAll("[ms-step-container]");
     containers.forEach((container) => {
       const step = container.getAttribute("ms-step-container");
-      console.log(step);
+      console.log(step, typeof step, typeof memberJson.data.currentStep);
       container.style.display = "none";
-      if (memberJson.data.currentStep === step) {
+      if (memberJson.data.currentStep == step) {
         container.style.display = "block";
       }
     });
