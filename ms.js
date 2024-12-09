@@ -7,14 +7,20 @@ document.addEventListener("DOMContentLoaded", async function () {
       const memberJson = await memberstack.getMemberJSON(member.id);
       console.log(memberJson);
 
-      const updatedData = {
-        ...memberJson.data,
-        test: "test.jpg",
-      };
+      const dataElements = document.querySelectorAll("[ms-data-json]");
+      dataElements.forEach((element) => {
+        const key = element.getAttribute("ms-data-json");
+        element.textContent = memberJson.data[key];
+      });
 
-      console.log(updatedData);
+      // const updatedData = {
+      //   ...memberJson.data,
+      //   test: "test.jpg",
+      // };
 
-      await memberstack.updateMemberJSON({ json: updatedData });
+      // console.log(updatedData);
+
+      // await memberstack.updateMemberJSON({ json: updatedData });
     }
   });
 });
