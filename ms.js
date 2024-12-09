@@ -4,11 +4,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   memberstack.getCurrentMember().then(async ({ data: member }) => {
     console.log({ member });
     if (member) {
-      let memberJson = await memberstack.getMemberJSON(member.id);
+      const memberJson = await memberstack.getMemberJSON(member.id);
       console.log(memberJson);
       const updatedData = {
-        ...memberData.data,
-        avatarURL: "avatar.jpg",
+        ...memberJson.data,
+        avatarURL: "avatar22.jpg",
       };
       console.log(updatedData);
 
