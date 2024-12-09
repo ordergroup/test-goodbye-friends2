@@ -5,11 +5,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log({ member });
     if (member) {
       let memberJson = await memberstack.getMemberJSON(member.id);
-      console.log({ memberJson });
+      console.log(memberJson);
       const updatedData = {
         ...memberData.data,
         avatarURL: "avatar.jpg",
       };
+      console.log(updatedData);
 
       await memberstack.updateMemberJSON({ json: updatedData });
     }
