@@ -34,8 +34,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const buttonBack = document.getElementById("ms-back-btn");
     const yesButton = document.getElementById("ms-yes-btn");
 
-    const memberJson = await memberstack.getMemberJSON();
-
     singleButton.addEventListener("click", async () => {
       const memberJson = await memberstack.getMemberJSON();
 
