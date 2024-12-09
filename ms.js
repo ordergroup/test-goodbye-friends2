@@ -80,6 +80,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       await memberstack.updateMemberJSON({ json: updatedData });
       displayData();
     });
+
+    buttonBack.style.backgroundColor =
+      memberJson.data.currentStep <= 1 ? "gray" : undefined;
   };
 
   addListener();
