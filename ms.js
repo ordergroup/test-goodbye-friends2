@@ -19,15 +19,21 @@ document.addEventListener("DOMContentLoaded", async function () {
   };
   displayData();
 
-  const addListener = () => {
-    //custom attribute for one button: ms="button-back"
-
+  const addListener = async () => {
     const singleButton = document.getElementById("ms-single-btn");
     const buttonBack = document.getElementById("ms-back-btn");
     const yesButton = document.getElementById("ms-yes-btn");
 
+    const memberJson = await memberstack.getMemberJSON();
+
     const containers = document.querySelectorAll("[ms-step-container]");
-    console.log(containers);
+    containers.forEach((container) => {
+      const step = container.getAttribute("ms-step-container");
+      container.style.display = "none";
+      if (memberJson.data.currentStep === step) {
+        container.style.display = "block";
+      }
+    });
 
     singleButton.addEventListener("click", async () => {
       const memberJson = await memberstack.getMemberJSON();
