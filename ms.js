@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const buttonBack = document.getElementById("ms-back-btn");
     const yesButton = document.getElementById("ms-yes-btn");
 
+    const containers = document.querySelectorAll("[ms-step-container]");
+    console.log(containers);
+
     singleButton.addEventListener("click", async () => {
       const memberJson = await memberstack.getMemberJSON();
 
