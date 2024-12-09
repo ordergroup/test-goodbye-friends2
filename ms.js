@@ -7,10 +7,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   memberstack.getCurrentMember().then(async ({ data: member }) => {
     // if the member is logged in
+    console.log({ member });
     if (member) {
       // Get current member's JSON
       let memberJson = await memberstack.getMemberJSON();
-
+      console.log({ memberJson });
       // Modify or add new data
       memberJson.avatarURL = "avatar.jpg";
 
