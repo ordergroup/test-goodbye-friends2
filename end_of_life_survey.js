@@ -24,17 +24,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Updated Local Storage:", updatedData);
   };
 
+  // Send data to Memberstack
+  const sendDataToMemberstack = async () => {
+    const storedData = JSON.parse(localStorage.getItem("surveyData"));
+    console.log("Syncing Data to Memberstack:", storedData);
+
+    if (storedData) {
+      await memberstack.updateMemberJSON({ json: storedData });
+      console.log("Data sent to Memberstack:", storedData);
+    }
+  };
+
   // Periodically send data to Memberstack
   const startDataSync = () => {
     setInterval(async () => {
-      const storedData = JSON.parse(localStorage.getItem("surveyData"));
-      console.log("Syncing Data to Memberstack:", storedData);
-
-      if (storedData) {
-        await memberstack.updateMemberJSON({ json: storedData });
-        console.log("Data sent to Memberstack:", storedData);
-      }
+      await sendDataToMemberstack();
     }, 5000); // Sync every 5 seconds
+  };
+
+  // Send data immediately when the user leaves the page
+  const handleBeforeUnload = async (event) => {
+    await sendDataToMemberstack();
+    console.log("Data sent before page unload");
   };
 
   // Add listeners to inputs and back buttons
@@ -68,8 +79,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  // Initialize and start syncing
+  // Initialize, start syncing, and handle unload
   await initializeLocalStorage();
   addListeners();
   startDataSync();
+  window.addEventListener("beforeunload", handleBeforeUnload);
 });
