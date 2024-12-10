@@ -7,10 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
     const updatedData = { ...existingData, [key]: value };
     localStorage.setItem("surveyData", JSON.stringify(updatedData));
+    console.log(localStorage.getItem("surveyData"));
   };
 
   const sendDataToMemberstack = async () => {
     const storedData = JSON.parse(localStorage.getItem("surveyData"));
+    console.log({ storedData });
     if (storedData) {
       const memberJson = await memberstack.getMemberJSON();
       const updatedData = { ...memberJson.data, ...storedData };
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const currentStep =
           JSON.parse(localStorage.getItem("surveyData"))?.currentStep || 1;
+
         saveToLocalStorage("currentStep", currentStep + 1);
       });
     });
