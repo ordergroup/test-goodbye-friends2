@@ -3,59 +3,73 @@ console.log("end of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
-  const memberJson = await memberstack.getMemberJSON();
-  console.log(memberJson);
+  // Get initial member data and populate localStorage
+  const initializeLocalStorage = async () => {
+    const memberJson = await memberstack.getMemberJSON();
+    console.log("Initial Member Data:", memberJson);
 
-  const sendDataToMemberstack = async () => {
-    const storedData = JSON.parse(localStorage.getItem("surveyData"));
-    console.log({ storedData });
-    if (storedData) {
-      const updatedData = { ...memberJson.data, ...storedData };
-      memberstack.updateMemberJSON({ json: updatedData });
-      console.log("Data sent to Memberstack:", updatedData);
-    }
+    const storedData = JSON.parse(localStorage.getItem("surveyData")) || {};
+    const updatedData = { ...memberJson.data, ...storedData };
+
+    localStorage.setItem("surveyData", JSON.stringify(updatedData));
+    console.log("Initialized Local Storage:", updatedData);
   };
 
+  // Save data to localStorage
   const saveToLocalStorage = (key, value) => {
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
     const updatedData = { ...existingData, [key]: value };
-    localStorage.setItem("surveyData", JSON.stringify(updatedData));
-    console.log(localStorage.getItem("surveyData"));
 
-    setTimeout(async () => {
-      await sendDataToMemberstack();
-    }, 1000);
+    localStorage.setItem("surveyData", JSON.stringify(updatedData));
+    console.log("Updated Local Storage:", updatedData);
   };
 
-  const addListener = () => {
+  // Periodically send data to Memberstack
+  const startDataSync = () => {
+    setInterval(async () => {
+      const storedData = JSON.parse(localStorage.getItem("surveyData"));
+      console.log("Syncing Data to Memberstack:", storedData);
+
+      if (storedData) {
+        await memberstack.updateMemberJSON({ json: storedData });
+        console.log("Data sent to Memberstack:", storedData);
+      }
+    }, 5000); // Sync every 5 seconds
+  };
+
+  // Add listeners to inputs and back buttons
+  const addListeners = () => {
     const form = document.getElementById("End-of-life-survey-1-SK");
 
+    // Handle back button clicks
     const backButtons = document.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const currentStep =
-          JSON.parse(localStorage.getItem("surveyData"))?.currentStep || 1;
+        const existingData =
+          JSON.parse(localStorage.getItem("surveyData")) || {};
+
+        const currentStep = existingData?.currentStep || 1;
         saveToLocalStorage("currentStep", Math.max(currentStep - 1, 1));
       });
     });
 
+    // Handle input changes
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
       input.addEventListener("change", () => {
-        console.log(input.name, input.value);
+        console.log("Input Changed:", input.name, input.value);
 
         saveToLocalStorage(input.name, input.value);
 
-        const currentStep =
-          JSON.parse(localStorage.getItem("surveyData"))?.currentStep || 1;
-
-        saveToLocalStorage("currentStep", currentStep + 1);
+        const existingData =
+          JSON.parse(localStorage.getItem("surveyData")) || {};
+        saveToLocalStorage("currentStep", (existingData.currentStep || 1) + 1);
       });
     });
   };
 
-  // Send data to Memberstack when the user exits or refreshes the page
-  window.addEventListener("beforeunload", sendDataToMemberstack);
-
-  addListener();
+  // Initialize and start syncing
+  await initializeLocalStorage();
+  addListeners();
+  startDataSync();
 });
