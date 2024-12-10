@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   };
 
   // Send data immediately when the user leaves the page
-  const handleBeforeUnload = async (event) => {
-    await sendDataToMemberstack();
+  const handleBeforeUnload = () => {
+    sendDataToMemberstack();
     console.log("Data sent before page unload");
   };
 
