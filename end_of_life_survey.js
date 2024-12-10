@@ -5,17 +5,17 @@ document.addEventListener("DOMContentLoaded", async function () {
   const addListener = async () => {
     const form = document.getElementById("End-of-life-survey-1-SK");
 
-    const backButton = document.querySelector('[data-form="back-btn"]');
-    console.log(backButton);
-    backButton.addEventListener("click", async () => {
-      const memberJson = await memberstack.getMemberJSON();
-      console.log("BACK BUTTON CLICKED");
-      const updatedData = {
-        ...memberJson.data,
-        currentStep: memberJson.data.currentStep - 1,
-      };
-
-      await memberstack.updateMemberJSON({ json: updatedData });
+    const backButtons = document.querySelectorAll('[data-form="back-btn"]');
+    console.log(backButtons);
+    backButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const memberJson = await memberstack.getMemberJSON();
+        const updatedData = {
+          ...memberJson.data,
+          currentStep: memberJson.data.currentStep - 1,
+        };
+        await memberstack.updateMemberJSON({ json: updatedData });
+      });
     });
 
     //get all inputs in form and listen for changes
