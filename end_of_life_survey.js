@@ -1,3 +1,4 @@
+console.log("enf of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
