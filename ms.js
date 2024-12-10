@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
+  return;
   const memberstack = window.$memberstackDom;
 
   const displayData = async () => {

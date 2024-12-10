@@ -1,6 +1,7 @@
 console.log("enf of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
+  console.log("here");
 
   const addListener = async () => {
     const form = document.getElementById("End-of-life-survey-1-SK");
