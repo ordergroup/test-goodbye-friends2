@@ -5,12 +5,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   const memberJson = await memberstack.getMemberJSON();
   console.log(memberJson);
-  const saveToLocalStorage = (key, value) => {
-    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
-    const updatedData = { ...existingData, [key]: value };
-    localStorage.setItem("surveyData", JSON.stringify(updatedData));
-    console.log(localStorage.getItem("surveyData"));
-  };
 
   const sendDataToMemberstack = async () => {
     const storedData = JSON.parse(localStorage.getItem("surveyData"));
@@ -20,6 +14,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       await memberstack.updateMemberJSON({ json: updatedData });
       console.log("Data sent to Memberstack:", updatedData);
     }
+  };
+
+  const saveToLocalStorage = (key, value) => {
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+    const updatedData = { ...existingData, [key]: value };
+    localStorage.setItem("surveyData", JSON.stringify(updatedData));
+    console.log(localStorage.getItem("surveyData"));
+
+    setTimeout(async () => {
+      await sendDataToMemberstack();
+    }, 1000);
   };
 
   const addListener = () => {
