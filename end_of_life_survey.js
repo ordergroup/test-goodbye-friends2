@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Send data immediately when the user leaves the page
   const handleBeforeUnload = async (event) => {
+    console.log("leaving");
     await sendDataToMemberstack();
     console.log("Data sent before page unload");
   };
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const backButtons = document.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
+        console.log("CLICK BACK");
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
 
