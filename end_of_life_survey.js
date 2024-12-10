@@ -1,8 +1,10 @@
 console.log("end of life survey");
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
+  const memberJson = await memberstack.getMemberJSON();
+  console.log(memberJson);
   const saveToLocalStorage = (key, value) => {
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
     const updatedData = { ...existingData, [key]: value };
@@ -14,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const storedData = JSON.parse(localStorage.getItem("surveyData"));
     console.log({ storedData });
     if (storedData) {
-      const memberJson = await memberstack.getMemberJSON();
       const updatedData = { ...memberJson.data, ...storedData };
       await memberstack.updateMemberJSON({ json: updatedData });
       console.log("Data sent to Memberstack:", updatedData);
@@ -25,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("End-of-life-survey-1-SK");
 
     const backButtons = document.querySelectorAll('[data-form="back-btn"]');
-    console.log(backButtons);
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const currentStep =
