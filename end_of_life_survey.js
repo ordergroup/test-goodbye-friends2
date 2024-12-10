@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Initial Member Data:", memberJson);
 
     const storedData = JSON.parse(localStorage.getItem("surveyData")) || {};
-    const updatedData = { ...memberJson.data, ...storedData };
+    const updatedData = { ...memberJson.data };
 
     localStorage.setItem("surveyData", JSON.stringify(updatedData));
     console.log("Initialized Local Storage:", updatedData);
