@@ -8,16 +8,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Get initial member data and populate localStorage
   const initializeLocalStorage = async () => {
-    const memberJson = await memberstack.getMemberJSON();
-    console.log("Initial Member Data:", memberJson);
+    const memberJson = (await memberstack.getMemberJSON()) || {};
+    localStorage.setItem("surveyData", JSON.stringify(memberJson.data));
+    console.log("Initialized Local Storage:", memberJson.data);
 
-    const storedData = JSON.parse(localStorage.getItem("surveyData")) || {};
-    const updatedData = { ...memberJson.data };
-
-    localStorage.setItem("surveyData", JSON.stringify(updatedData));
-    console.log("Initialized Local Storage:", updatedData);
-
-    lastSyncedData = JSON.stringify(updatedData); // Set initial sync state
+    lastSyncedData = JSON.stringify(updatedData);
   };
 
   // Save data to localStorage
@@ -66,11 +61,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const backButtons = document.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const existingData =
-          JSON.parse(localStorage.getItem("surveyData")) || {};
-
-        const currentStep = existingData?.currentStep || 1;
-        saveToLocalStorage("currentStep", Math.max(currentStep - 1, 1));
+        console.log("Back button clicked");
       });
     });
 
@@ -81,10 +72,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("Input Changed:", input.name, input.value);
 
         saveToLocalStorage(input.name, input.value);
-
-        const existingData =
-          JSON.parse(localStorage.getItem("surveyData")) || {};
-        saveToLocalStorage("currentStep", (existingData.currentStep || 1) + 1);
       });
     });
   };
