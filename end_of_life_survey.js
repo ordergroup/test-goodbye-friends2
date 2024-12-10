@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log({ storedData });
     if (storedData) {
       const updatedData = { ...memberJson.data, ...storedData };
-      await memberstack.updateMemberJSON({ json: updatedData });
+      memberstack.updateMemberJSON({ json: updatedData });
       console.log("Data sent to Memberstack:", updatedData);
     }
   };
