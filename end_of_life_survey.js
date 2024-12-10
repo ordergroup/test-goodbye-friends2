@@ -3,6 +3,9 @@ console.log("end of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
+  // Keeps track of the last synced data
+  let lastSyncedData = null;
+
   // Get initial member data and populate localStorage
   const initializeLocalStorage = async () => {
     const memberJson = await memberstack.getMemberJSON();
@@ -13,6 +16,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     localStorage.setItem("surveyData", JSON.stringify(updatedData));
     console.log("Initialized Local Storage:", updatedData);
+
+    lastSyncedData = JSON.stringify(updatedData); // Set initial sync state
   };
 
   // Save data to localStorage
@@ -24,18 +29,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Updated Local Storage:", updatedData);
   };
 
-  // Send data to Memberstack
+  // Send data to Memberstack if data has changed
   const sendDataToMemberstack = async () => {
     const storedData = JSON.parse(localStorage.getItem("surveyData"));
-    console.log("Syncing Data to Memberstack:", storedData);
+    if (JSON.stringify(storedData) !== lastSyncedData) {
+      console.log("Syncing Data to Memberstack:", storedData);
 
-    if (storedData) {
-      await memberstack.updateMemberJSON({ json: storedData });
-      console.log("Data sent to Memberstack:", storedData);
+      if (storedData) {
+        await memberstack.updateMemberJSON({ json: storedData });
+        console.log("Data sent to Memberstack:", storedData);
+        lastSyncedData = JSON.stringify(storedData); // Update last synced state
+      }
+    } else {
+      console.log("No changes in data; skipping sync.");
     }
   };
 
-  // Periodically send data to Memberstack
+  // Periodically check and send data to Memberstack if it has changed
   const startDataSync = () => {
     setInterval(async () => {
       await sendDataToMemberstack();
@@ -44,7 +54,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Send data immediately when the user leaves the page
   const handleBeforeUnload = async (event) => {
-    console.log("leaving");
     await sendDataToMemberstack();
     console.log("Data sent before page unload");
   };
@@ -57,7 +66,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const backButtons = document.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        console.log("CLICK BACK");
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
 
