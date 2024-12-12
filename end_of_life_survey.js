@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log(radioInputs);
     radioInputs.forEach((radioInput) => {
       const closestDiv = radioInput.closest("div");
+      console.log(closestDiv);
+      console.log(existingData[radioInput.name] === radioInput.value);
       if (existingData[radioInput.name] === radioInput.value) {
         closestDiv.classList.add("w--redirected-checked");
       } else {
