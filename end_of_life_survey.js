@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     //w--redirected-checked
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
 
-    const radioInputs = document.querySelectorAll(".w-form-formradioinput");
+    const radioInputs = document.querySelectorAll("input[type=radio]");
     console.log(radioInputs);
-    radioInputs.forEach((input) => {
-      if (existingData[input.name] === input.value) {
-        console.log("exist");
-        input.classList.add("w--redirected-checked");
+    radioInputs.forEach((radioInput) => {
+      const closestDiv = radioInput.closest("div");
+      if (existingData[radioInput.name] === radioInput.value) {
+        closestDiv.classList.add("w--redirected-checked");
       } else {
-        input.classList.remove("w--redirected-checked");
+        closestDiv.classList.remove("w--redirected-checked");
       }
     });
   };
