@@ -6,22 +6,21 @@ document.addEventListener("DOMContentLoaded", async function () {
   let lastSyncedData = null;
 
   const displaySelectedData = () => {
-    console.log("display selected data");
-    //w--redirected-checked
-
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
 
     const radioInputs = form.querySelectorAll("input[type=radio]");
-    console.log(radioInputs);
     radioInputs.forEach((radioInput) => {
       const closestDiv = radioInput.previousElementSibling;
-      console.log(closestDiv);
-      console.log(existingData[radioInput.name] === radioInput.value);
       if (existingData[radioInput.name] === radioInput.value) {
         closestDiv.classList.add("w--redirected-checked");
       } else {
         closestDiv.classList.remove("w--redirected-checked");
       }
+    });
+
+    const textInputs = form.querySelectorAll("input[type=text]");
+    textInputs.forEach((textInput) => {
+      textInput.value = existingData[textInput.name] || "";
     });
   };
 
