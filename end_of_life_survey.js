@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     textInputs.forEach((textInput) => {
       textInput.value = existingData[textInput.name] || "";
     });
+
+    const select = form.querySelectorAll("select");
+    console.log(select);
   };
 
   // Get initial member data and populate localStorage
