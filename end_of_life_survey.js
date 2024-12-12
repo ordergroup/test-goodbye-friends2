@@ -3,7 +3,7 @@ console.log("end of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
-  const displaySelectedData = (memberJson) => {
+  const displaySelectedData = () => {
     console.log("display selected data");
     //w--redirected-checked
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     localStorage.setItem("surveyData", JSON.stringify(updatedData));
     console.log("Updated Local Storage:", updatedData);
+    displaySelectedData();
   };
 
   // Send data to Memberstack if data has changed
