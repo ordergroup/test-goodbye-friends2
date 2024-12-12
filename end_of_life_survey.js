@@ -3,6 +3,23 @@ console.log("end of life survey");
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
 
+  const displaySelectedData = (memberJson) => {
+    console.log("display selected data");
+    //w--redirected-checked
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+
+    const radioInputs = document.querySelectorAll(".w-form-formradioinput");
+    console.log(radioInputs);
+    radioInputs.forEach((input) => {
+      if (existingData[input.name] === input.value) {
+        console.log("exist");
+        input.classList.add("w--redirected-checked");
+      } else {
+        input.classList.remove("w--redirected-checked");
+      }
+    });
+  };
+
   // Keeps track of the last synced data
   let lastSyncedData = null;
 
@@ -13,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Initialized Local Storage:", memberJson.data);
 
     lastSyncedData = JSON.stringify(memberJson.data);
+    displaySelectedData();
   };
 
   // Save data to localStorage
