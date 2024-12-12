@@ -2,13 +2,16 @@ console.log("end of life survey");
 
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
+  const form = document.getElementById("End-of-life-survey-1-SK");
+  let lastSyncedData = null;
 
   const displaySelectedData = () => {
     console.log("display selected data");
     //w--redirected-checked
+
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
 
-    const radioInputs = document.querySelectorAll("input[type=radio]");
+    const radioInputs = form.querySelectorAll("input[type=radio]");
     console.log(radioInputs);
     radioInputs.forEach((radioInput) => {
       const closestDiv = radioInput.previousElementSibling;
@@ -21,9 +24,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   };
-
-  // Keeps track of the last synced data
-  let lastSyncedData = null;
 
   // Get initial member data and populate localStorage
   const initializeLocalStorage = async () => {
@@ -76,10 +76,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Add listeners to inputs and back buttons
   const addListeners = () => {
-    const form = document.getElementById("End-of-life-survey-1-SK");
-
     // Handle back button clicks
-    const backButtons = document.querySelectorAll('[data-form="back-btn"]');
+    const backButtons = form.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
         console.log("Back button clicked");
