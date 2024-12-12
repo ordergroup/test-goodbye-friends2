@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const select = form.querySelectorAll("select");
+    select.forEach((select) => {
+      select.value = existingData[select.name] || "";
+    });
+
     console.log(select);
   };
 
@@ -87,13 +91,23 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     });
 
-    // Handle input changes
+    // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
       input.addEventListener("change", () => {
         console.log("Input Changed:", input.name, input.value);
 
         saveToLocalStorage(input.name, input.value);
+      });
+    });
+
+    // type select
+    const selects = form.querySelectorAll("select");
+    selects.forEach((select) => {
+      select.addEventListener("change", () => {
+        console.log("Select Changed:", select.name, select.value);
+
+        saveToLocalStorage(select.name, select.value);
       });
     });
   };
