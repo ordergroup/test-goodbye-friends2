@@ -25,10 +25,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const select = form.querySelectorAll("select");
     select.forEach((select) => {
+      console.log("here");
       if (existingData[select.name]) select.value = existingData[select.name];
     });
-
-    console.log(select);
   };
 
   // Get initial member data and populate localStorage
@@ -96,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     inputs.forEach((input) => {
       input.addEventListener("change", () => {
         console.log("Input Changed:", input.name, input.value);
-
         saveToLocalStorage(input.name, input.value);
       });
     });
@@ -106,7 +104,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     selects.forEach((select) => {
       select.addEventListener("change", () => {
         console.log("Select Changed:", select.name, select.value);
-
         saveToLocalStorage(select.name, select.value);
       });
     });
