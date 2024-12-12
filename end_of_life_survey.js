@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const radioInputs = document.querySelectorAll("input[type=radio]");
     console.log(radioInputs);
     radioInputs.forEach((radioInput) => {
-      const closestDiv = radioInput.closest("div");
+      const closestDiv = radioInput.previousElementSibling;
       console.log(closestDiv);
       console.log(existingData[radioInput.name] === radioInput.value);
       if (existingData[radioInput.name] === radioInput.value) {
