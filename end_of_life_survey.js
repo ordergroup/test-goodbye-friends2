@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const select = form.querySelectorAll("select");
     select.forEach((select) => {
-      select.value = existingData[select.name] || "";
+      if (existingData[select.name]) select.value = existingData[select.name];
     });
 
     console.log(select);
