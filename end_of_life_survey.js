@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     backButtons.forEach((button) => {
       button.addEventListener("click", () => {
         console.log("Back button clicked");
+        displaySelectedData();
       });
     });
 
