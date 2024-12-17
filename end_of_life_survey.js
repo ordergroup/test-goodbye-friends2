@@ -92,6 +92,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveToLocalStorage(select.name, select.value);
       });
     });
+
+    const dataCloneElements = form.querySelectorAll("[data-clone]");
+    console.log({ dataCloneElements });
   };
 
   await initializeLocalStorage();
