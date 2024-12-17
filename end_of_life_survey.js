@@ -1,135 +1,105 @@
-console.log("end of life survey");
-
 document.addEventListener("DOMContentLoaded", async function () {
   const memberstack = window.$memberstackDom;
   const form = document.getElementById("End-of-life-survey-1-SK");
   let lastSyncedData = null;
 
-  const displaySelectedData = () => {
-    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
-
-    const radioInputs = form.querySelectorAll("input[type=radio]");
-    radioInputs.forEach((radioInput) => {
-      const closestDiv = radioInput.previousElementSibling;
-      if (existingData[radioInput.name] === radioInput.value) {
-        closestDiv.classList.add("w--redirected-checked");
-      } else {
-        closestDiv.classList.remove("w--redirected-checked");
-      }
-    });
-
-    const textInputs = form.querySelectorAll("input[type=text]");
-    textInputs.forEach((textInput) => {
-      textInput.value = existingData[textInput.name] || "";
-    });
-
-    const select = form.querySelectorAll("select");
-    select.forEach((select) => {
-      if (existingData[select.name]) select.value = existingData[select.name];
-    });
-  };
-
   const initializeLocalStorage = async () => {
     const memberJson = (await memberstack.getMemberJSON()) || {};
     localStorage.setItem("surveyData", JSON.stringify(memberJson.data));
     console.log("Initialized Local Storage:", memberJson.data);
-
     lastSyncedData = JSON.stringify(memberJson.data);
     displaySelectedData();
   };
 
-  const saveToLocalStorage = (key, value) => {
+  const saveToLocalStorage = (wrapperType, index, key, value) => {
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
-    const updatedData = { ...existingData, [key]: value };
+    existingData[wrapperType] = existingData[wrapperType] || [];
 
-    localStorage.setItem("surveyData", JSON.stringify(updatedData));
-    console.log("Updated Local Storage:", updatedData);
-    displaySelectedData();
+    // Aktualizacja konkretnego obiektu w tablicy
+    if (!existingData[wrapperType][index]) {
+      existingData[wrapperType][index] = {};
+    }
+    existingData[wrapperType][index][key] = value;
+
+    localStorage.setItem("surveyData", JSON.stringify(existingData));
+    console.log("Updated Local Storage:", existingData);
   };
 
-  const sendDataToMemberstack = async () => {
-    const storedData = JSON.parse(localStorage.getItem("surveyData"));
-    if (JSON.stringify(storedData) !== lastSyncedData) {
-      console.log("Syncing Data to Memberstack:", storedData);
-      if (storedData) {
-        await memberstack.updateMemberJSON({ json: storedData });
-        lastSyncedData = JSON.stringify(storedData);
-      }
-    } else {
-      console.log("No changes in data; skipping sync.");
+  const removeFromLocalStorage = (wrapperType, index) => {
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+    if (existingData[wrapperType]) {
+      existingData[wrapperType].splice(index, 1);
+      localStorage.setItem("surveyData", JSON.stringify(existingData));
+      console.log("Removed Item:", existingData);
     }
   };
 
-  const startDataSync = () => {
-    setInterval(async () => {
-      await sendDataToMemberstack();
-    }, 5000);
+  const displaySelectedData = () => {
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+
+    Object.keys(existingData).forEach((wrapperType) => {
+      const wrapper = form.querySelector(
+        `[data-clone-wrapper="${wrapperType}"]`
+      );
+      if (wrapper) {
+        wrapper.innerHTML = ""; // Wyczyść istniejące elementy
+        existingData[wrapperType].forEach((data, index) => {
+          addCloneElement(wrapperType, data, index);
+        });
+      }
+    });
+  };
+
+  const addCloneElement = (wrapperType, data = {}, index = null) => {
+    const wrapper = form.querySelector(`[data-clone-wrapper="${wrapperType}"]`);
+    if (!wrapper) return;
+
+    const newElement = wrapper.querySelector("[data-clone]").cloneNode(true);
+    newElement.style.display = "block";
+
+    // Wstaw dane do inputów
+    const inputs = newElement.querySelectorAll("input, select");
+    inputs.forEach((input) => {
+      const key = input.getAttribute("name");
+      input.value = data[key] || "";
+      input.addEventListener("input", () => {
+        saveToLocalStorage(wrapperType, index, key, input.value);
+      });
+    });
+
+    // Obsługa usuwania
+    const deleteButton = newElement.querySelector("[data-form='remove-clone']");
+    deleteButton.addEventListener("click", () => {
+      newElement.remove();
+      removeFromLocalStorage(wrapperType, index);
+    });
+
+    wrapper.appendChild(newElement);
   };
 
   const addListeners = () => {
-    const backButtons = form.querySelectorAll('[data-form="back-btn"]');
-    backButtons.forEach((button) => {
+    // Obsługa przycisku Dodaj
+    const addButtons = form.querySelectorAll("[data-add-new]");
+    addButtons.forEach((button) => {
+      const wrapperType = button.getAttribute("data-add-new");
       button.addEventListener("click", () => {
-        console.log("Back button clicked");
-        displaySelectedData();
-      });
-    });
+        const wrapper = form.querySelector(
+          `[data-clone-wrapper="${wrapperType}"]`
+        );
+        const existingData =
+          JSON.parse(localStorage.getItem("surveyData")) || {};
+        existingData[wrapperType] = existingData[wrapperType] || [];
 
-    // type radio and text
-    const inputs = form.querySelectorAll("input");
-    inputs.forEach((input) => {
-      input.addEventListener("input", () => {
-        console.log("Input Changed:", input.name, input.value);
-        saveToLocalStorage(input.name, input.value);
-      });
-    });
+        const newIndex = existingData[wrapperType].length;
+        existingData[wrapperType].push({});
+        localStorage.setItem("surveyData", JSON.stringify(existingData));
 
-    // type select
-    const selects = form.querySelectorAll("select");
-    selects.forEach((select) => {
-      select.addEventListener("input", () => {
-        console.log("Select Changed:", select.name, select.value);
-        saveToLocalStorage(select.name, select.value);
-      });
-    });
-
-    const dataCloneElements = form.querySelectorAll("[data-clone-wrapper]");
-    dataCloneElements.forEach((element) => {
-      const attrValue = element.getAttribute("data-clone-wrapper");
-      console.log("wrapper", attrValue, element);
-    });
-
-    const cloneElementsButton = form.querySelectorAll("[data-add-new]");
-    cloneElementsButton.forEach((button) => {
-      const attrValue = button.getAttribute("data-add-new");
-      console.log("button", attrValue, button);
-      button.addEventListener("click", () => {
-        console.log("Clone Elements Button Clicked");
+        addCloneElement(wrapperType, {}, newIndex);
+        console.log("Added New Clone Element");
       });
     });
   };
 
   await initializeLocalStorage();
   addListeners();
-  startDataSync();
 });
-
-const json = {
-  child: [
-    {
-      name: "John1",
-      age: 11,
-      maritalStatus: "single",
-    },
-    {
-      name: "John2",
-      age: 12,
-      maritalStatus: "single",
-    },
-    {
-      name: "John3",
-      age: 13,
-      maritalStatus: "single",
-    },
-  ],
-};
