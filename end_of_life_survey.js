@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       console.log("wrapper", attrValue);
     });
 
-    const cloneElementsButton = form.querySelector("[data-add-new]");
+    const cloneElementsButton = form.querySelectorAll("[data-add-new]");
     cloneElementsButton.forEach((button) => {
       const attrValue = button.getAttribute("data-add-new");
       console.log("button", attrValue);
