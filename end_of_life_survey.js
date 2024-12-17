@@ -105,10 +105,27 @@ document.addEventListener("DOMContentLoaded", async function () {
       console.log("button", attrValue, button);
       button.addEventListener("click", () => {
         console.log("Clone Elements Button Clicked");
+        const wrapper = form.querySelector(
+          `[data-clone-wrapper="${attrValue}"]`
+        );
+        const clones = wrapper.querySelectorAll("[data-clone]");
+        clones.forEach((clone, index) => {
+          const inputs = clone.querySelectorAll("input");
+          inputs.forEach((input) => {
+            input.addEventListener("input", () => {
+              console.log("Input Changed:", input.name, input.value);
+              const existingData =
+                JSON.parse(localStorage.getItem("surveyData")) || {};
+              const arr = existingData[attrValue] || [];
+              arr[index] = { ...arr[index], [input.name]: input.value };
+              saveToLocalStorage(attrValue, arr);
+            });
+          });
+        });
       });
     });
   };
-
+  console.log("v3");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
