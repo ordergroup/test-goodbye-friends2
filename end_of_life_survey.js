@@ -106,6 +106,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inicjalizacja danych przy załadowaniu
   initializeLocalStorage(); // Inicjalizuje dane z localStorage
   updateMainInputs();
-  updateClonedData();
   displaySelectedData();
 });
