@@ -93,11 +93,43 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     });
 
-    const dataCloneElements = form.querySelectorAll("[data-clone]");
-    console.log({ dataCloneElements });
+    const dataCloneElements = form.querySelectorAll("[data-clone-wrapper]");
+    dataCloneElements.forEach((element) => {
+      const attrValue = element.getAttribute("data-clone-wrapper");
+      console.log("wrapper", attrValue);
+    });
+
+    const cloneElementsButton = form.querySelector("[data-add-new]");
+    cloneElementsButton.forEach((button) => {
+      const attrValue = button.getAttribute("data-add-new");
+      console.log("button", attrValue);
+      button.addEventListener("click", () => {
+        console.log("Clone Elements Button Clicked");
+      });
+    });
   };
 
   await initializeLocalStorage();
   addListeners();
   startDataSync();
 });
+
+const json = {
+  child: [
+    {
+      name: "John1",
+      age: 11,
+      maritalStatus: "single",
+    },
+    {
+      name: "John2",
+      age: 12,
+      maritalStatus: "single",
+    },
+    {
+      name: "John3",
+      age: 13,
+      maritalStatus: "single",
+    },
+  ],
+};
