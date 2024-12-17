@@ -1,111 +1,115 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const memberstack = window.$memberstackDom; // Poprawny obiekt Memberstack
-  let formData = {}; // Obiekt na dane wejściowe
-  console.log("v2");
+console.log("end of life survey");
 
-  // Funkcja inicjalizująca dane z localStorage
+document.addEventListener("DOMContentLoaded", async function () {
+  const memberstack = window.$memberstackDom;
+  const form = document.getElementById("End-of-life-survey-1-SK");
+  let lastSyncedData = null;
+
+  const displaySelectedData = () => {
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+
+    const radioInputs = form.querySelectorAll("input[type=radio]");
+    radioInputs.forEach((radioInput) => {
+      const closestDiv = radioInput.previousElementSibling;
+      if (existingData[radioInput.name] === radioInput.value) {
+        closestDiv.classList.add("w--redirected-checked");
+      } else {
+        closestDiv.classList.remove("w--redirected-checked");
+      }
+    });
+
+    const textInputs = form.querySelectorAll("input[type=text]");
+    textInputs.forEach((textInput) => {
+      textInput.value = existingData[textInput.name] || "";
+    });
+
+    const select = form.querySelectorAll("select");
+    select.forEach((select) => {
+      if (existingData[select.name]) select.value = existingData[select.name];
+    });
+  };
+
   const initializeLocalStorage = async () => {
     const memberJson = (await memberstack.getMemberJSON()) || {};
-    localStorage.setItem("surveyData", "");
     localStorage.setItem("surveyData", JSON.stringify(memberJson.data));
     console.log("Initialized Local Storage:", memberJson.data);
 
+    lastSyncedData = JSON.stringify(memberJson.data);
     displaySelectedData();
   };
 
-  // Funkcja zapisująca dane do localStorage i Memberstack
-  const saveData = () => {
-    localStorage.setItem("formData", JSON.stringify(formData));
-    memberstack.updateMemberJSON(formData).then(() => {
-      console.log("Data saved to Memberstack:", formData);
-    });
+  const saveToLocalStorage = (key, value) => {
+    const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+    const updatedData = { ...existingData, [key]: value };
+
+    localStorage.setItem("surveyData", JSON.stringify(updatedData));
+    console.log("Updated Local Storage:", updatedData);
+    displaySelectedData();
   };
 
-  // Funkcja pobierająca wartości z inputów
-  const getInputValues = (element) => {
-    const inputs = element.querySelectorAll("input, select");
-    const data = {};
-    inputs.forEach((input) => {
-      if (input.name) {
-        data[input.name] = input.value;
+  const sendDataToMemberstack = async () => {
+    const storedData = JSON.parse(localStorage.getItem("surveyData"));
+    if (JSON.stringify(storedData) !== lastSyncedData) {
+      console.log("Syncing Data to Memberstack:", storedData);
+      if (storedData) {
+        await memberstack.updateMemberJSON({ json: storedData });
+        lastSyncedData = JSON.stringify(storedData);
       }
-    });
-    return data;
+    } else {
+      console.log("No changes in data; skipping sync.");
+    }
   };
 
-  // Funkcja aktualizująca dane dla zagnieżdżonych wrapperów
-  const updateClonedData = () => {
-    const cloneWrappers = document.querySelectorAll("[data-clone-wrapper]");
-    cloneWrappers.forEach((wrapper) => {
-      const wrapperName = wrapper.getAttribute("data-clone-wrapper"); // np. "child", "property"
-      const children = wrapper.querySelectorAll(
-        `[data-clone="${wrapperName}"]`
-      );
+  const startDataSync = () => {
+    setInterval(async () => {
+      await sendDataToMemberstack();
+    }, 5000);
+  };
 
-      formData[wrapperName] = []; // Tworzymy tablicę dla każdego wrappera
-      children.forEach((child) => {
-        const childData = getInputValues(child);
-        formData[wrapperName].push(childData);
+  const addListeners = () => {
+    const backButtons = form.querySelectorAll('[data-form="back-btn"]');
+    backButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        console.log("Back button clicked");
+        displaySelectedData();
       });
     });
-    saveData();
-  };
 
-  // Funkcja aktualizująca główne inputy
-  const updateMainInputs = () => {
-    formData = getInputValues(document); // Pobierz główne dane z inputów
-    updateClonedData(); // Zaktualizuj dane zagnieżdżone
-    saveData();
-  };
+    // type radio and text
+    const inputs = form.querySelectorAll("input");
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        console.log("Input Changed:", input.name, input.value);
+        saveToLocalStorage(input.name, input.value);
+      });
+    });
 
-  // Funkcja wyświetlająca dane (displaySelectedData)
-  const displaySelectedData = () => {
-    const displayArea = document.getElementById("display-area"); // Przykładowy obszar na dane
-    if (!displayArea) return;
+    // type select
+    const selects = form.querySelectorAll("select");
+    selects.forEach((select) => {
+      select.addEventListener("input", () => {
+        console.log("Select Changed:", select.name, select.value);
+        saveToLocalStorage(select.name, select.value);
+      });
+    });
 
-    displayArea.innerHTML = ""; // Wyczyść obszar wyświetlania
+    const dataCloneWrappers = form.querySelectorAll("[data-clone-wrapper]");
+    dataCloneWrappers.forEach((element) => {
+      const attrValue = element.getAttribute("data-clone-wrapper");
+      console.log("wrapper", attrValue, element);
+    });
 
-    // Wyświetl główne dane
-    Object.entries(formData).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        displayArea.innerHTML += `<h3>${key}:</h3>`;
-        value.forEach((item, index) => {
-          displayArea.innerHTML += `<h4>${key} ${index + 1}</h4>`;
-          Object.entries(item).forEach(([childKey, childValue]) => {
-            displayArea.innerHTML += `<p>${childKey}: ${childValue}</p>`;
-          });
-        });
-      } else {
-        displayArea.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
-      }
+    const dataAddNewButtons = form.querySelectorAll("[data-add-new]");
+    dataAddNewButtons.forEach((button) => {
+      const attrValue = button.getAttribute("data-add-new");
+      console.log("button", attrValue, button);
+      button.addEventListener("click", () => {
+        console.log("Clone Elements Button Clicked");
+      });
     });
   };
 
-  // Nasłuchiwanie na zmiany w inputach
-  document.addEventListener("input", (event) => {
-    if (event.target.closest("[data-clone-wrapper]")) {
-      updateClonedData();
-    } else {
-      updateMainInputs();
-    }
-    displaySelectedData(); // Aktualizuj wyświetlanie po każdej zmianie
-  });
-
-  // Obsługa dodawania i usuwania elementów
-  document.body.addEventListener("click", (event) => {
-    if (
-      event.target.closest("[data-add-new]") ||
-      event.target.closest('[data-form="remove-clone"]')
-    ) {
-      setTimeout(() => {
-        updateClonedData();
-        displaySelectedData();
-      }, 50); // Delay na zakończenie operacji klonowania/usuwania
-    }
-  });
-
-  // Inicjalizacja danych przy załadowaniu
-  initializeLocalStorage(); // Inicjalizuje dane z localStorage
-  updateMainInputs();
-  displaySelectedData();
+  await initializeLocalStorage();
+  addListeners();
+  startDataSync();
 });
