@@ -89,26 +89,29 @@ document.addEventListener("DOMContentLoaded", async function () {
       nestedSteps.push(attrValue);
       button.addEventListener("click", () => {
         console.log("button", attrValue, button);
-        const wrapper = form.querySelector(
-          `[data-clone-wrapper="${attrValue}"]`
-        );
-        const clones = wrapper.querySelectorAll("[data-clone]");
-        console.log({ clones });
-        clones.forEach((clone, index) => {
-          const inputs = clone.querySelectorAll("input");
-          console.log(inputs);
-          inputs.forEach((input) => {
-            input.addEventListener("input", () => {
-              console.log("Input Changed:", input.name, input.value);
-              const existingData =
-                JSON.parse(localStorage.getItem("surveyData")) || {};
-              const arr = existingData[attrValue] || [];
-              console.log(arr);
-              arr[index] = { ...arr[index], [input.name]: input.value };
-              saveToLocalStorage(attrValue, arr);
+        setTimeout(() => {
+          const wrapper = form.querySelector(
+            `[data-clone-wrapper="${attrValue}"]`
+          );
+          console.log(wrapper);
+          const clones = wrapper.querySelectorAll("[data-clone]");
+          console.log({ clones });
+          clones.forEach((clone, index) => {
+            const inputs = clone.querySelectorAll("input");
+            console.log(inputs);
+            inputs.forEach((input) => {
+              input.addEventListener("input", () => {
+                console.log("Input Changed:", input.name, input.value);
+                const existingData =
+                  JSON.parse(localStorage.getItem("surveyData")) || {};
+                const arr = existingData[attrValue] || [];
+                console.log(arr);
+                arr[index] = { ...arr[index], [input.name]: input.value };
+                saveToLocalStorage(attrValue, arr);
+              });
             });
           });
-        });
+        }, 1000);
       });
     });
 
