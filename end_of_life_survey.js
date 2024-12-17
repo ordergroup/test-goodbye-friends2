@@ -129,13 +129,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type select
     const selects = form.querySelectorAll("select");
     selects.forEach((select) => {
-      select.addEventListener("input", () => {
-        console.log("Select Changed:", select.name, select.value);
-        saveToLocalStorage(select.name, select.value);
-      });
+      const parent2LevelsUp = element.parentElement.parentElement;
+      const parent2LevelsUpAttrValue =
+        parent2LevelsUp.getAttribute("data-clone");
+      if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
+        select.addEventListener("input", () => {
+          console.log("Select Changed:", select.name, select.value);
+          saveToLocalStorage(select.name, select.value);
+        });
+      }
     });
   };
-  console.log("v3");
+  console.log("v4");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
