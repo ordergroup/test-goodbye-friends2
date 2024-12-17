@@ -96,13 +96,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     const dataCloneElements = form.querySelectorAll("[data-clone-wrapper]");
     dataCloneElements.forEach((element) => {
       const attrValue = element.getAttribute("data-clone-wrapper");
-      console.log("wrapper", attrValue);
+      console.log("wrapper", attrValue, element);
     });
 
     const cloneElementsButton = form.querySelectorAll("[data-add-new]");
     cloneElementsButton.forEach((button) => {
       const attrValue = button.getAttribute("data-add-new");
-      console.log("button", attrValue);
+      console.log("button", attrValue, button);
       button.addEventListener("click", () => {
         console.log("Clone Elements Button Clicked");
       });
