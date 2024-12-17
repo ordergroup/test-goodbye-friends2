@@ -75,23 +75,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     });
 
-    // type radio and text
-    const inputs = form.querySelectorAll("input");
-    inputs.forEach((input) => {
-      input.addEventListener("input", () => {
-        console.log("Input Changed:", input.name, input.value);
-        saveToLocalStorage(input.name, input.value);
-      });
-    });
-
-    // type select
-    const selects = form.querySelectorAll("select");
-    selects.forEach((select) => {
-      select.addEventListener("input", () => {
-        console.log("Select Changed:", select.name, select.value);
-        saveToLocalStorage(select.name, select.value);
-      });
-    });
+    const nestedSteps = [];
 
     const dataCloneWrappers = form.querySelectorAll("[data-clone-wrapper]");
     dataCloneWrappers.forEach((element) => {
@@ -102,6 +86,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const dataAddNewButtons = form.querySelectorAll("[data-add-new]");
     dataAddNewButtons.forEach((button) => {
       const attrValue = button.getAttribute("data-add-new");
+      nestedSteps.push(attrValue);
       console.log("button", attrValue, button);
       button.addEventListener("click", () => {
         console.log("Clone Elements Button Clicked");
@@ -122,6 +107,31 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
           });
         });
+      });
+    });
+
+    console.log(nestedSteps);
+
+    // type radio and text
+    const inputs = form.querySelectorAll("input");
+    inputs.forEach((input) => {
+      const parent2LevelsUp = element.parentElement.parentElement;
+      const parent2LevelsUpAttrValue =
+        parent2LevelsUp.getAttribute("data-clone");
+      if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
+        input.addEventListener("input", () => {
+          console.log("Input Changed:", input.name, input.value);
+          saveToLocalStorage(input.name, input.value);
+        });
+      }
+    });
+
+    // type select
+    const selects = form.querySelectorAll("select");
+    selects.forEach((select) => {
+      select.addEventListener("input", () => {
+        console.log("Select Changed:", select.name, select.value);
+        saveToLocalStorage(select.name, select.value);
       });
     });
   };
