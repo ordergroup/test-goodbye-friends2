@@ -1,96 +1,100 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  await initializeLocalStorage();
-  addListeners();
-  observeClonedElements(); // Monitorowanie dodawanych elementów
-  startDataSync();
+document.addEventListener("DOMContentLoaded", () => {
+  const memberstack = window.$memberstackDom; // Poprawny obiekt Memberstack
+  let formData = {}; // Obiekt na dane wejściowe
+
+  // Funkcja zapisująca dane do localStorage i Memberstack
+  const saveData = () => {
+    localStorage.setItem("formData", JSON.stringify(formData));
+    memberstack.updateMemberJSON(formData).then(() => {
+      console.log("Data saved to Memberstack:", formData);
+    });
+  };
+
+  // Funkcja pobierająca wartości z inputów
+  const getInputValues = (element) => {
+    const inputs = element.querySelectorAll("input, select");
+    const data = {};
+    inputs.forEach((input) => {
+      if (input.name) {
+        data[input.name] = input.value;
+      }
+    });
+    return data;
+  };
+
+  // Funkcja aktualizująca dane dla zagnieżdżonych wrapperów
+  const updateClonedData = () => {
+    const cloneWrappers = document.querySelectorAll("[data-clone-wrapper]");
+    cloneWrappers.forEach((wrapper) => {
+      const wrapperName = wrapper.getAttribute("data-clone-wrapper"); // np. "child", "property"
+      const children = wrapper.querySelectorAll(
+        `[data-clone="${wrapperName}"]`
+      );
+
+      formData[wrapperName] = []; // Tworzymy tablicę dla każdego wrappera
+      children.forEach((child) => {
+        const childData = getInputValues(child);
+        formData[wrapperName].push(childData);
+      });
+    });
+    saveData();
+  };
+
+  // Funkcja aktualizująca główne inputy
+  const updateMainInputs = () => {
+    formData = getInputValues(document); // Pobierz główne dane z inputów
+    updateClonedData(); // Zaktualizuj dane zagnieżdżone
+    saveData();
+  };
+
+  // Funkcja wyświetlająca dane (displaySelectedData)
+  const displaySelectedData = () => {
+    const displayArea = document.getElementById("display-area"); // Przykładowy obszar na dane
+    if (!displayArea) return;
+
+    displayArea.innerHTML = ""; // Wyczyść obszar wyświetlania
+
+    // Wyświetl główne dane
+    Object.entries(formData).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        displayArea.innerHTML += `<h3>${key}:</h3>`;
+        value.forEach((item, index) => {
+          displayArea.innerHTML += `<h4>${key} ${index + 1}</h4>`;
+          Object.entries(item).forEach(([childKey, childValue]) => {
+            displayArea.innerHTML += `<p>${childKey}: ${childValue}</p>`;
+          });
+        });
+      } else {
+        displayArea.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+      }
+    });
+  };
+
+  // Nasłuchiwanie na zmiany w inputach
+  document.addEventListener("input", (event) => {
+    if (event.target.closest("[data-clone-wrapper]")) {
+      updateClonedData();
+    } else {
+      updateMainInputs();
+    }
+    displaySelectedData(); // Aktualizuj wyświetlanie po każdej zmianie
+  });
+
+  // Obsługa dodawania i usuwania elementów
+  document.body.addEventListener("click", (event) => {
+    if (
+      event.target.closest("[data-add-new]") ||
+      event.target.closest('[data-form="remove-clone"]')
+    ) {
+      setTimeout(() => {
+        updateClonedData();
+        displaySelectedData();
+      }, 50); // Delay na zakończenie operacji klonowania/usuwania
+    }
+  });
+
+  // Inicjalizacja danych przy załadowaniu
+  updateMainInputs();
+  updateClonedData();
+  displaySelectedData();
 });
-
-// Inicjalizacja localStorage
-const initializeLocalStorage = async () => {
-  const existingData = localStorage.getItem("surveyData");
-  if (!existingData) {
-    localStorage.setItem("surveyData", JSON.stringify({}));
-  }
-};
-
-// Funkcja zapisu danych do localStorage
-const saveToLocalStorage = (name, value) => {
-  const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
-  existingData[name] = value;
-  localStorage.setItem("surveyData", JSON.stringify(existingData));
-  console.log("Zapisano do localStorage:", existingData);
-};
-
-// Dodanie nasłuchiwania dla istniejących inputów
-const addListeners = () => {
-  const form = document.querySelector("form");
-
-  form.addEventListener("input", (event) => {
-    const input = event.target;
-    if (input.closest('[data-clone="child"]')) {
-      saveToLocalStorage(input.name, input.value);
-    }
-  });
-
-  form.addEventListener("click", (event) => {
-    if (event.target.closest("[data-form='remove-clone']")) {
-      const wrapper = event.target.closest("[data-clone='child']");
-      if (wrapper) {
-        console.log("Element usunięty:", wrapper);
-
-        // Usuń dane z localStorage
-        const inputs = wrapper.querySelectorAll("input, select");
-        const existingData =
-          JSON.parse(localStorage.getItem("surveyData")) || {};
-
-        inputs.forEach((input) => {
-          delete existingData[input.name];
-        });
-
-        localStorage.setItem("surveyData", JSON.stringify(existingData));
-        console.log("Zaktualizowane localStorage po usunięciu:", existingData);
-
-        // Usuń element z DOM
-        wrapper.remove();
-      }
-    }
-  });
-};
-
-// Obserwacja nowych elementów w DOM
-const observeClonedElements = () => {
-  const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === "childList") {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === 1 && node.matches('[data-clone="child"]')) {
-            console.log("Nowy element dodany:", node);
-
-            // Dodaj listener dla inputów w nowym elemencie
-            const inputs = node.querySelectorAll("input, select");
-            inputs.forEach((input) => {
-              input.addEventListener("input", () => {
-                console.log("Input Changed:", input.name, input.value);
-                saveToLocalStorage(input.name, input.value);
-              });
-            });
-          }
-        });
-      }
-    }
-  });
-
-  const targetNode = document.querySelector("[data-clone-wrapper]");
-  if (targetNode) {
-    observer.observe(targetNode, { childList: true, subtree: true });
-    console.log("MutationObserver uruchomiony");
-  } else {
-    console.warn("Nie znaleziono głównego wrappera do obserwacji.");
-  }
-};
-
-// Synchronizacja danych (opcjonalna funkcja)
-const startDataSync = () => {
-  console.log("Synchronizacja danych uruchomiona.");
-  // Tu możesz dodać synchronizację np. z API lub Memberstack
-};
