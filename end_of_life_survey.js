@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const memberstack = window.$memberstackDom; // Poprawny obiekt Memberstack
   let formData = {}; // Obiekt na dane wejściowe
-  console.log("v1");
+  console.log("v2");
 
   // Funkcja inicjalizująca dane z localStorage
   const initializeLocalStorage = async () => {
     const memberJson = (await memberstack.getMemberJSON()) || {};
+    localStorage.setItem("surveyData", "");
     localStorage.setItem("surveyData", JSON.stringify(memberJson.data));
     console.log("Initialized Local Storage:", memberJson.data);
 
