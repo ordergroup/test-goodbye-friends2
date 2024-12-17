@@ -2,6 +2,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const memberstack = window.$memberstackDom; // Poprawny obiekt Memberstack
   let formData = {}; // Obiekt na dane wejściowe
 
+  // Funkcja inicjalizująca dane z localStorage
+  const initializeLocalStorage = () => {
+    const storedData = localStorage.getItem("formData");
+    if (storedData) {
+      formData = JSON.parse(storedData);
+      updateMainInputs(); // Zaktualizuj inputy na podstawie danych z localStorage
+    }
+  };
+
   // Funkcja zapisująca dane do localStorage i Memberstack
   const saveData = () => {
     localStorage.setItem("formData", JSON.stringify(formData));
@@ -94,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Inicjalizacja danych przy załadowaniu
+  initializeLocalStorage(); // Inicjalizuje dane z localStorage
   updateMainInputs();
   updateClonedData();
   displaySelectedData();
