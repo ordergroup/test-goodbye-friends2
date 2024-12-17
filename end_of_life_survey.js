@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
-      input.addEventListener("change", () => {
+      input.addEventListener("input", () => {
         console.log("Input Changed:", input.name, input.value);
         saveToLocalStorage(input.name, input.value);
       });
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type select
     const selects = form.querySelectorAll("select");
     selects.forEach((select) => {
-      select.addEventListener("change", () => {
+      select.addEventListener("input", () => {
         console.log("Select Changed:", select.name, select.value);
         saveToLocalStorage(select.name, select.value);
       });
