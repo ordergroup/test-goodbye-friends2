@@ -117,6 +117,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     console.log(nestedSteps);
 
+    // Create an observer instance
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        console.log(mutation);
+      }
+    });
+    const config = { childList: true, subtree: true };
+    observer.observe(form, config);
+
     // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
@@ -145,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   };
-  console.log("v5");
+  console.log("v6");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
