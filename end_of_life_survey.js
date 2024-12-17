@@ -3,12 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let formData = {}; // Obiekt na dane wejściowe
 
   // Funkcja inicjalizująca dane z localStorage
-  const initializeLocalStorage = () => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      formData = JSON.parse(storedData);
-      updateMainInputs(); // Zaktualizuj inputy na podstawie danych z localStorage
-    }
+  const initializeLocalStorage = async () => {
+    const memberJson = (await memberstack.getMemberJSON()) || {};
+    localStorage.setItem("surveyData", JSON.stringify(memberJson.data));
+    console.log("Initialized Local Storage:", memberJson.data);
+
+    lastSyncedData = JSON.stringify(memberJson.data);
+    displaySelectedData();
   };
 
   // Funkcja zapisująca dane do localStorage i Memberstack
