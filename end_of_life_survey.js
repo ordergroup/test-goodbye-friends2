@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
-      const parent2LevelsUp = element.parentElement.parentElement;
+      const parent2LevelsUp = input.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
         parent2LevelsUp.getAttribute("data-clone");
       if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type select
     const selects = form.querySelectorAll("select");
     selects.forEach((select) => {
-      const parent2LevelsUp = element.parentElement.parentElement;
+      const parent2LevelsUp = select.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
         parent2LevelsUp.getAttribute("data-clone");
       if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
