@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async function () {
               });
             });
           });
-        }, 1000);
+        }, 3000);
       });
     });
 
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   };
-  console.log("v6");
+  console.log("v7");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
