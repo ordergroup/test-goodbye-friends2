@@ -66,6 +66,41 @@ document.addEventListener("DOMContentLoaded", async function () {
     }, 5000);
   };
 
+  // Funkcja, która nasłuchuje zmiany w data-clone-wrapper
+  function observeCloneWrapper(wrapperSelector) {
+    // Znajdź wszystkie wrappery z atrybutem data-clone-wrapper
+    const wrappers = document.querySelectorAll(wrapperSelector);
+
+    wrappers.forEach((wrapper) => {
+      // Stwórz obserwatora
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            const addedNodes = Array.from(mutation.addedNodes);
+            const removedNodes = Array.from(mutation.removedNodes);
+
+            if (addedNodes.length > 0) {
+              console.log("Dodano nowe elementy:", addedNodes);
+            }
+            if (removedNodes.length > 0) {
+              console.log("Usunięto elementy:", removedNodes);
+            }
+          }
+        });
+      });
+
+      // Konfiguracja obserwatora
+      observer.observe(wrapper, {
+        childList: true, // Obserwuj zmiany w dzieciach
+        subtree: false, // Nie schodź w głąb kolejnych poziomów
+      });
+
+      console.log("Obserwuję zmiany w:", wrapper);
+    });
+  }
+
+  observeCloneWrapper("[data-clone-wrapper]");
+
   const addListeners = () => {
     const backButtons = form.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
@@ -89,29 +124,27 @@ document.addEventListener("DOMContentLoaded", async function () {
       nestedSteps.push(attrValue);
       button.addEventListener("click", () => {
         console.log("button", attrValue, button);
-        setTimeout(() => {
-          const wrapper = form.querySelector(
-            `[data-clone-wrapper="${attrValue}"]`
-          );
-          console.log(wrapper);
-          const clones = wrapper.querySelectorAll("[data-clone]");
-          console.log({ clones });
-          clones.forEach((clone, index) => {
-            const inputs = clone.querySelectorAll("input");
-            console.log(inputs);
-            inputs.forEach((input) => {
-              input.addEventListener("input", () => {
-                console.log("Input Changed:", input.name, input.value);
-                const existingData =
-                  JSON.parse(localStorage.getItem("surveyData")) || {};
-                const arr = existingData[attrValue] || [];
-                console.log(arr);
-                arr[index] = { ...arr[index], [input.name]: input.value };
-                saveToLocalStorage(attrValue, arr);
-              });
+        const wrapper = form.querySelector(
+          `[data-clone-wrapper="${attrValue}"]`
+        );
+        console.log(wrapper);
+        const clones = wrapper.querySelectorAll("[data-clone]");
+        console.log({ clones });
+        clones.forEach((clone, index) => {
+          const inputs = clone.querySelectorAll("input");
+          console.log(inputs);
+          inputs.forEach((input) => {
+            input.addEventListener("input", () => {
+              console.log("Input Changed:", input.name, input.value);
+              const existingData =
+                JSON.parse(localStorage.getItem("surveyData")) || {};
+              const arr = existingData[attrValue] || [];
+              console.log(arr);
+              arr[index] = { ...arr[index], [input.name]: input.value };
+              saveToLocalStorage(attrValue, arr);
             });
           });
-        }, 3000);
+        });
       });
     });
 
@@ -154,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   };
-  console.log("v7");
+  console.log("v8");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
