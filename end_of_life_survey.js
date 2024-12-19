@@ -176,15 +176,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
-    console.log(removeButtons);
     removeButtons.forEach((button) => {
+      const clone = button.parentElement.parentElement.parentElement;
+      const attrValue = clone.getAttribute("data-clone");
+
       button.addEventListener("click", () => {
         console.log("Remove button clicked");
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
-        const arr = existingData[button.getAttribute("data-clone")] || [];
+        const arr = existingData[attrValue] || [];
         arr.splice(0, 1);
-        saveToLocalStorage(button.getAttribute("data-clone"), arr);
+        saveToLocalStorage(attrValue, arr);
       });
     });
 
