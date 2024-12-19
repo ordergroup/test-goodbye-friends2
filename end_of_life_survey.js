@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                   '[data-form="remove-clone"]'
                 );
                 removeButton.addEventListener("click", () => {
-                  console.log("Remove button clicked");
+                  console.log("Remove CLONE button clicked");
                   const existingData =
                     JSON.parse(localStorage.getItem("surveyData")) || {};
                   const arr = existingData[attrValue] || [];
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       const attrValue = clone.getAttribute("data-clone");
 
       button.addEventListener("click", () => {
-        console.log("Remove button clicked");
+        console.log("Remove NORMAL button clicked");
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
         const arr = existingData[attrValue] || [];
