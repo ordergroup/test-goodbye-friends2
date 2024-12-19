@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
       nestedSteps.push(attrValue);
 
+      console.log(wrapper);
       const addNewButton = form.querySelector(`[data-add-new="${attrValue}"]`);
       const removeButton = wrapper.querySelector('[data-form="remove-clone"]');
 
@@ -223,7 +224,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v5");
+  console.log("v6");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
