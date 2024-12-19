@@ -73,6 +73,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     wrappers.forEach((wrapper) => {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
+      console.log(attrValue);
+      console.log({ currentChildrenLength });
       // Stwórz obserwatora
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -83,6 +85,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (addedNodes.length > 0) {
               console.log("Dodano nowe elementy:", addedNodes);
               addedNodes.forEach((node) => {
+                const parent = node.parentNode;
+                console.log(parent);
+                const siblingCount = parent.children.length;
+                console.log(siblingCount);
+                const currentIndex = siblingCount;
+
                 const inputs = node.querySelectorAll("input");
                 console.log(inputs);
                 inputs.forEach((input) => {
@@ -92,7 +100,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                       JSON.parse(localStorage.getItem("surveyData")) || {};
                     const arr = existingData[attrValue] || [];
                     console.log(arr);
-                    arr.push({ [input.name]: input.value });
+
+                    arr[currentIndex] = {
+                      ...arr[currentIndex],
+                      [input.name]: input.value,
+                    };
+
                     saveToLocalStorage(attrValue, arr);
                   });
                 });
@@ -193,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v3");
+  console.log("v4");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
