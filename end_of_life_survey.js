@@ -111,8 +111,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         childList: true, // Obserwuj zmiany w dzieciach
         subtree: false, // Nie schodź w głąb kolejnych poziomów
       });
-
-      console.log("Obserwuję zmiany w:", wrapper);
     });
   }
 
@@ -132,40 +130,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     const dataCloneWrappers = form.querySelectorAll("[data-clone-wrapper]");
     dataCloneWrappers.forEach((element) => {
       const attrValue = element.getAttribute("data-clone-wrapper");
-      console.log("wrapper", attrValue, element);
-    });
-
-    const dataAddNewButtons = form.querySelectorAll("[data-add-new]");
-    dataAddNewButtons.forEach((button) => {
-      const attrValue = button.getAttribute("data-add-new");
       nestedSteps.push(attrValue);
-      // button.addEventListener("click", () => {
-      //   console.log("button", attrValue, button);
-      //   const wrapper = form.querySelector(
-      //     `[data-clone-wrapper="${attrValue}"]`
-      //   );
-      //   console.log(wrapper);
-      //   const clones = wrapper.querySelectorAll("[data-clone]");
-      //   console.log({ clones });
-      //   clones.forEach((clone, index) => {
-      //     const inputs = clone.querySelectorAll("input");
-      //     console.log(inputs);
-      //     inputs.forEach((input) => {
-      //       input.addEventListener("input", () => {
-      //         console.log("Input Changed:", input.name, input.value);
-      //         const existingData =
-      //           JSON.parse(localStorage.getItem("surveyData")) || {};
-      //         const arr = existingData[attrValue] || [];
-      //         console.log(arr);
-      //         arr[index] = { ...arr[index], [input.name]: input.value };
-      //         saveToLocalStorage(attrValue, arr);
-      //       });
-      //     });
-      //   });
-      // });
-    });
 
-    // console.log(nestedSteps);
+      const addNewButton = form.querySelector("[data-add-new]");
+      const removeButton = form.querySelector('[data-form="remove-clone"]');
+
+      addNewButton.addEventListener("click", () => {
+        console.log("Add new button clicked");
+      });
+
+      removeButton.addEventListener("click", () => {
+        console.log("Remove button clicked");
+      });
+    });
 
     // type radio and text
     const inputs = form.querySelectorAll("input");
@@ -177,6 +154,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         input.addEventListener("input", () => {
           console.log("Input Changed:", input.name, input.value);
           saveToLocalStorage(input.name, input.value);
+        });
+      } else {
+        input.addEventListener("input", () => {
+          console.log("Input Changed:", input.name, input.value);
+          const existingData =
+            JSON.parse(localStorage.getItem("surveyData")) || {};
+          const arr = existingData[parent2LevelsUpAttrValue] || [];
+          console.log(arr);
+          arr[0] = { ...arr[0], [input.name]: input.value };
+          saveToLocalStorage(parent2LevelsUpAttrValue, arr);
         });
       }
     });
@@ -192,11 +179,21 @@ document.addEventListener("DOMContentLoaded", async function () {
           console.log("Select Changed:", select.name, select.value);
           saveToLocalStorage(select.name, select.value);
         });
+      } else {
+        select.addEventListener("input", () => {
+          console.log("Select Changed:", select.name, select.value);
+          const existingData =
+            JSON.parse(localStorage.getItem("surveyData")) || {};
+          const arr = existingData[parent2LevelsUpAttrValue] || [];
+          console.log(arr);
+          arr[0] = { ...arr[0], [select.name]: select.value };
+          saveToLocalStorage(parent2LevelsUpAttrValue, arr);
+        });
       }
     });
   };
 
-  console.log("v1");
+  console.log("v3");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
