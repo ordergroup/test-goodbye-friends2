@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     wrappers.forEach((wrapper) => {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
-      console.log(attrValue);
+      // console.log(attrValue);
 
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -152,12 +152,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const nestedSteps = [];
 
     const dataCloneWrappers = form.querySelectorAll("[data-clone-wrapper]");
-    dataCloneWrappers.forEach((element) => {
-      const attrValue = element.getAttribute("data-clone-wrapper");
+    dataCloneWrappers.forEach((wrapper) => {
+      const attrValue = wrapper.getAttribute("data-clone-wrapper");
       nestedSteps.push(attrValue);
 
-      const addNewButton = form.querySelector("[data-add-new]");
-      const removeButton = form.querySelector('[data-form="remove-clone"]');
+      const addNewButton = wrapper.querySelector("[data-add-new]");
+      const removeButton = wrapper.querySelector('[data-form="remove-clone"]');
 
       addNewButton.addEventListener("click", () => {
         console.log("Add new button clicked");
