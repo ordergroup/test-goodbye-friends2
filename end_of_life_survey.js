@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const wrappers = document.querySelectorAll(wrapperSelector);
 
     wrappers.forEach((wrapper) => {
+      const attrValue = wrapper.getAttribute("data-clone-wrapper");
       // Stwórz obserwatora
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -81,7 +82,23 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             if (addedNodes.length > 0) {
               console.log("Dodano nowe elementy:", addedNodes);
+              addedNodes.forEach((node) => {
+                const inputs = node.querySelectorAll("input");
+                console.log(inputs);
+                inputs.forEach((input) => {
+                  input.addEventListener("input", () => {
+                    console.log("Input NODE Changed:", input.name, input.value);
+                    const existingData =
+                      JSON.parse(localStorage.getItem("surveyData")) || {};
+                    const arr = existingData[attrValue] || [];
+                    console.log(arr);
+                    arr.push({ [input.name]: input.value });
+                    saveToLocalStorage(attrValue, arr);
+                  });
+                });
+              });
             }
+
             if (removedNodes.length > 0) {
               console.log("Usunięto elementy:", removedNodes);
             }
@@ -122,33 +139,33 @@ document.addEventListener("DOMContentLoaded", async function () {
     dataAddNewButtons.forEach((button) => {
       const attrValue = button.getAttribute("data-add-new");
       nestedSteps.push(attrValue);
-      button.addEventListener("click", () => {
-        console.log("button", attrValue, button);
-        const wrapper = form.querySelector(
-          `[data-clone-wrapper="${attrValue}"]`
-        );
-        console.log(wrapper);
-        const clones = wrapper.querySelectorAll("[data-clone]");
-        console.log({ clones });
-        clones.forEach((clone, index) => {
-          const inputs = clone.querySelectorAll("input");
-          console.log(inputs);
-          inputs.forEach((input) => {
-            input.addEventListener("input", () => {
-              console.log("Input Changed:", input.name, input.value);
-              const existingData =
-                JSON.parse(localStorage.getItem("surveyData")) || {};
-              const arr = existingData[attrValue] || [];
-              console.log(arr);
-              arr[index] = { ...arr[index], [input.name]: input.value };
-              saveToLocalStorage(attrValue, arr);
-            });
-          });
-        });
-      });
+      // button.addEventListener("click", () => {
+      //   console.log("button", attrValue, button);
+      //   const wrapper = form.querySelector(
+      //     `[data-clone-wrapper="${attrValue}"]`
+      //   );
+      //   console.log(wrapper);
+      //   const clones = wrapper.querySelectorAll("[data-clone]");
+      //   console.log({ clones });
+      //   clones.forEach((clone, index) => {
+      //     const inputs = clone.querySelectorAll("input");
+      //     console.log(inputs);
+      //     inputs.forEach((input) => {
+      //       input.addEventListener("input", () => {
+      //         console.log("Input Changed:", input.name, input.value);
+      //         const existingData =
+      //           JSON.parse(localStorage.getItem("surveyData")) || {};
+      //         const arr = existingData[attrValue] || [];
+      //         console.log(arr);
+      //         arr[index] = { ...arr[index], [input.name]: input.value };
+      //         saveToLocalStorage(attrValue, arr);
+      //       });
+      //     });
+      //   });
+      // });
     });
 
-    console.log(nestedSteps);
+    // console.log(nestedSteps);
 
     // type radio and text
     const inputs = form.querySelectorAll("input");
@@ -178,7 +195,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     });
   };
-  console.log("v9");
+
+  console.log("v1");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
