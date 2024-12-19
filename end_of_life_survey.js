@@ -165,13 +165,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("Add new button clicked", attrValue);
       });
 
-      removeButton.addEventListener("click", () => {
-        console.log("Remove button clicked", attrValue);
+      // removeButton.addEventListener("click", () => {
+      //   console.log("Remove button clicked", attrValue);
+      //   const existingData =
+      //     JSON.parse(localStorage.getItem("surveyData")) || {};
+      //   const arr = existingData[attrValue] || [];
+      //   arr.splice(0, 1);
+      //   saveToLocalStorage(attrValue, arr);
+      // });
+    });
+
+    const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
+    console.log(removeButtons);
+    removeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        console.log("Remove button clicked");
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
-        const arr = existingData[attrValue] || [];
+        const arr = existingData[button.getAttribute("data-clone")] || [];
         arr.splice(0, 1);
-        saveToLocalStorage(attrValue, arr);
+        saveToLocalStorage(button.getAttribute("data-clone"), arr);
       });
     });
 
@@ -224,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v6");
+  console.log("v7");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
