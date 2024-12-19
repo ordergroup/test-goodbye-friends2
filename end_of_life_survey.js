@@ -157,15 +157,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
       nestedSteps.push(attrValue);
 
-      const addNewButton = wrapper.querySelector("[data-add-new]");
+      const addNewButton = form.querySelector(`[data-add-new="${attrValue}"]`);
       const removeButton = wrapper.querySelector('[data-form="remove-clone"]');
 
       addNewButton.addEventListener("click", () => {
-        console.log("Add new button clicked");
+        console.log("Add new button clicked", attrValue);
       });
 
       removeButton.addEventListener("click", () => {
-        console.log("Remove button clicked");
+        console.log("Remove button clicked", attrValue);
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
         const arr = existingData[attrValue] || [];
