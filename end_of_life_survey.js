@@ -50,13 +50,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   const sendDataToMemberstack = async () => {
     const storedData = JSON.parse(localStorage.getItem("surveyData"));
     if (JSON.stringify(storedData) !== lastSyncedData) {
-      console.log("Syncing Data to Memberstack:", storedData);
+      // console.log("Syncing Data to Memberstack:", storedData);
       if (storedData) {
         await memberstack.updateMemberJSON({ json: storedData });
         lastSyncedData = JSON.stringify(storedData);
       }
     } else {
-      console.log("No changes in data; skipping sync.");
+      // console.log("No changes in data; skipping sync.");
     }
   };
 
