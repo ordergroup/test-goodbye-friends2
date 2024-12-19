@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                   const arr = existingData[attrValue] || [];
                   arr.splice(currentIndex, 1);
                   saveToLocalStorage(attrValue, arr);
+                  node.remove();
                 });
 
                 const inputs = node.querySelectorAll("input");
