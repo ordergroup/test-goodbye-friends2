@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     wrappers.forEach((wrapper) => {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
       console.log(attrValue);
-      // Stwórz obserwatora
+
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === "childList") {
@@ -88,7 +88,19 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.log(parent);
                 const siblingCount = parent.children.length;
                 console.log(siblingCount);
-                const currentIndex = siblingCount;
+                const currentIndex = siblingCount - 1;
+
+                const removeButton = node.querySelector(
+                  '[data-form="remove-clone"]'
+                );
+                removeButton.addEventListener("click", () => {
+                  console.log("Remove button clicked");
+                  const existingData =
+                    JSON.parse(localStorage.getItem("surveyData")) || {};
+                  const arr = existingData[attrValue] || [];
+                  arr.splice(currentIndex, 1);
+                  saveToLocalStorage(attrValue, arr);
+                });
 
                 const inputs = node.querySelectorAll("input");
                 console.log(inputs);
@@ -153,6 +165,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       removeButton.addEventListener("click", () => {
         console.log("Remove button clicked");
+        const existingData =
+          JSON.parse(localStorage.getItem("surveyData")) || {};
+        const arr = existingData[attrValue] || [];
+        arr.splice(0, 1);
+        saveToLocalStorage(attrValue, arr);
       });
     });
 
@@ -205,7 +222,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v4");
+  console.log("v5");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
