@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     wrappers.forEach((wrapper) => {
       const attrValue = wrapper.getAttribute("data-clone-wrapper");
       console.log(attrValue);
-      console.log({ currentChildrenLength });
       // Stwórz obserwatora
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
