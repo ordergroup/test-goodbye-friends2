@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     localStorage.setItem("surveyData", JSON.stringify(updatedData));
     console.log("Updated Local Storage:", updatedData);
-    displaySelectedData();
+    // displaySelectedData();
   };
 
   const sendDataToMemberstack = async () => {
@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const arr = existingData[attrValue] || [];
         arr.splice(0, 1);
         saveToLocalStorage(attrValue, arr);
+        clone.remove();
       });
     });
 
