@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const existingData =
                   JSON.parse(localStorage.getItem("surveyData")) || {};
                 const arr = existingData[attrValue] || [];
-                console.log(arr);
+                console.log({ index });
 
                 arr[index] = { ...arr[index], [input.name]: input.value };
 
