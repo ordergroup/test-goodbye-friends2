@@ -66,81 +66,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }, 5000);
   };
 
-  // Funkcja, która nasłuchuje zmiany w data-clone-wrapper
-  // function observeCloneWrapper(wrapperSelector) {
-  //   // Znajdź wszystkie wrappery z atrybutem data-clone-wrapper
-  //   const wrappers = document.querySelectorAll(wrapperSelector);
-
-  //   wrappers.forEach((wrapper) => {
-  //     const attrValue = wrapper.getAttribute("data-clone-wrapper");
-  //     // console.log(attrValue);
-
-  //     const observer = new MutationObserver((mutations) => {
-  //       mutations.forEach((mutation) => {
-  //         if (mutation.type === "childList") {
-  //           const addedNodes = Array.from(mutation.addedNodes);
-  //           const removedNodes = Array.from(mutation.removedNodes);
-
-  //           if (addedNodes.length > 0) {
-  //             console.log("Dodano nowe elementy:", addedNodes);
-  //             addedNodes.forEach((node) => {
-  //               const parent = node.parentNode;
-  //               console.log(parent);
-  //               const siblingCount = parent.children.length;
-  //               console.log(siblingCount);
-  //               const currentIndex = siblingCount - 1;
-
-  //               const removeButton = node.querySelector(
-  //                 '[data-form="remove-clone"]'
-  //               );
-  //               removeButton.addEventListener("click", () => {
-  //                 console.log("Remove CLONE button clicked");
-  //                 const existingData =
-  //                   JSON.parse(localStorage.getItem("surveyData")) || {};
-  //                 const arr = existingData[attrValue] || [];
-  //                 arr.splice(currentIndex, 1);
-  //                 saveToLocalStorage(attrValue, arr);
-  //                 node.remove();
-  //               });
-
-  //               const inputs = node.querySelectorAll("input");
-  //               console.log(inputs);
-  //               inputs.forEach((input) => {
-  //                 input.addEventListener("input", () => {
-  //                   console.log("Input NODE Changed:", input.name, input.value);
-  //                   const existingData =
-  //                     JSON.parse(localStorage.getItem("surveyData")) || {};
-  //                   const arr = existingData[attrValue] || [];
-  //                   console.log(arr);
-
-  //                   arr[currentIndex] = {
-  //                     ...arr[currentIndex],
-  //                     [input.name]: input.value,
-  //                   };
-
-  //                   saveToLocalStorage(attrValue, arr);
-  //                 });
-  //               });
-  //             });
-  //           }
-
-  //           if (removedNodes.length > 0) {
-  //             console.log("Usunięto elementy:", removedNodes);
-  //           }
-  //         }
-  //       });
-  //     });
-
-  //     // Konfiguracja obserwatora
-  //     observer.observe(wrapper, {
-  //       childList: true, // Obserwuj zmiany w dzieciach
-  //       subtree: false, // Nie schodź w głąb kolejnych poziomów
-  //     });
-  //   });
-  // }
-
-  // observeCloneWrapper("[data-clone-wrapper]");
-
   const addListeners = () => {
     const backButtons = form.querySelectorAll('[data-form="back-btn"]');
     backButtons.forEach((button) => {
@@ -224,7 +149,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
-
     removeButtons.forEach((button) => {
       const element = button.parentElement.parentElement.parentElement;
       const attrValue = element.getAttribute("data-clones");
@@ -236,6 +160,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     });
 
+    // if step is nested we save data to array instead of object
     // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
