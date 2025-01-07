@@ -152,24 +152,27 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const nestedSteps = [];
 
+    const removeItem = (attrValue, indexToRemove, element) => {
+      const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
+      const arr = existingData[attrValue] || [];
+      arr.splice(indexToRemove, 1);
+      saveToLocalStorage(attrValue, arr);
+      element.remove();
+    };
+
     const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
     dataCloneWrappers.forEach((wrapper) => {
       const attrValue = wrapper.getAttribute("data-clones-wrapper");
       nestedSteps.push(attrValue);
 
       const addNewButton = form.querySelector(`[data-add-news="${attrValue}"]`);
-      const removeButton = wrapper.querySelector('[data-form="remove-clone"]');
 
       addNewButton.addEventListener("click", () => {
-        console.log("Add new button clicked", attrValue);
-        // clone data-clone element that is inside data-clones-wrapper
         const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
         wrapper.appendChild(clone);
-        //add onchange listeners to inputs of clone
-        const inputs = clone.querySelectorAll("input");
 
+        const inputs = clone.querySelectorAll("input");
         inputs.forEach((input) => {
-          //clear input value
           input.value = "";
           input.addEventListener("input", () => {
             const indexOfClone = Array.from(wrapper.children).indexOf(clone);
@@ -189,45 +192,47 @@ document.addEventListener("DOMContentLoaded", async function () {
           });
         });
 
-        //add remove button listener to clone
+        const selects = clone.querySelectorAll("select");
+        selects.forEach((select) => {
+          select.value = "";
+          select.addEventListener("input", () => {
+            const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+            console.log({ indexOfClone });
+            console.log("Select NODE Changed:", select.name, select.value);
+            const existingData =
+              JSON.parse(localStorage.getItem("surveyData")) || {};
+            const arr = existingData[attrValue] || [];
+            console.log(arr);
+
+            arr[indexOfClone] = {
+              ...arr[indexOfClone],
+              [select.name]: select.value,
+            };
+
+            saveToLocalStorage(attrValue, arr);
+          });
+        });
+
         const removeButton = clone.querySelector('[data-form="remove-clone"]');
         removeButton.addEventListener("click", () => {
-          console.log("Remove CLONE button clicked");
           if (wrapper.children.length === 1) return;
+          console.log("Remove CLONE button clicked");
           const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-
-          const existingData =
-            JSON.parse(localStorage.getItem("surveyData")) || {};
-          const arr = existingData[attrValue] || [];
-          arr.splice(indexOfClone, 1);
-          saveToLocalStorage(attrValue, arr);
-          clone.remove();
+          removeItem(attrValue, indexOfClone, clone);
         });
       });
-
-      // removeButton.addEventListener("click", () => {
-      //   console.log("Remove button clicked", attrValue);
-      //   const existingData =
-      //     JSON.parse(localStorage.getItem("surveyData")) || {};
-      //   const arr = existingData[attrValue] || [];
-      //   arr.splice(0, 1);
-      //   saveToLocalStorage(attrValue, arr);
-      // });
     });
 
     const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
+
     removeButtons.forEach((button) => {
-      const clone = button.parentElement.parentElement.parentElement;
+      const element = button.parentElement.parentElement.parentElement;
       const attrValue = clone.getAttribute("data-clones");
 
       button.addEventListener("click", () => {
+        if (removeButtons.length === 1) return;
         console.log("Remove NORMAL button clicked");
-        const existingData =
-          JSON.parse(localStorage.getItem("surveyData")) || {};
-        const arr = existingData[attrValue] || [];
-        arr.splice(0, 1);
-        saveToLocalStorage(attrValue, arr);
-        clone.remove();
+        removeItem(attrValue, 0, element);
       });
     });
 
