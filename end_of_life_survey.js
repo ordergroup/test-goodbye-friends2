@@ -8,25 +8,69 @@ document.addEventListener("DOMContentLoaded", async function () {
   const displaySelectedData = () => {
     const existingData = JSON.parse(localStorage.getItem("surveyData")) || {};
 
-    const radioInputs = form.querySelectorAll("input[type=radio]");
-    radioInputs.forEach((radioInput) => {
-      const closestDiv = radioInput.previousElementSibling;
-      if (existingData[radioInput.name] === radioInput.value) {
-        closestDiv.classList.add("w--redirected-checked");
-      } else {
-        closestDiv.classList.remove("w--redirected-checked");
-      }
-    });
+    const nestedSteps = [];
 
-    const textInputs = form.querySelectorAll("input[type=text]");
-    textInputs.forEach((textInput) => {
-      textInput.value = existingData[textInput.name] || "";
-    });
+    const displayNestedData = () => {
+      const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
+      dataCloneWrappers.forEach((wrapper) => {
+        const attrValue = wrapper.getAttribute("data-clones-wrapper");
+        nestedSteps.push(attrValue);
+        const data = existingData[attrValue] || [{}];
+        const clones = wrapper.querySelectorAll("[data-clones]");
+        clones.forEach((clone, index) => {
+          const inputs = clone.querySelectorAll("input");
+          inputs.forEach((input) => {
+            input.value = data[index][input.name] || "";
+          });
 
-    const select = form.querySelectorAll("select");
-    select.forEach((select) => {
-      if (existingData[select.name]) select.value = existingData[select.name];
-    });
+          const selects = clone.querySelectorAll("select");
+          selects.forEach((select) => {
+            if (data[index][select.name])
+              select.value = data[index][select.name];
+          });
+        });
+      });
+    };
+
+    displayNestedData();
+
+    const displayFlatData = () => {
+      const radioInputs = form.querySelectorAll("input[type=radio]");
+      radioInputs.forEach((radioInput) => {
+        const closestDiv = radioInput.previousElementSibling;
+        if (existingData[radioInput.name] === radioInput.value) {
+          closestDiv.classList.add("w--redirected-checked");
+        } else {
+          closestDiv.classList.remove("w--redirected-checked");
+        }
+      });
+
+      const textInputs = form.querySelectorAll("input[type=text]");
+      textInputs.forEach((textInput) => {
+        const parent2LevelsUp = input.parentElement.parentElement;
+        const parent2LevelsUpAttrValue =
+          parent2LevelsUp.getAttribute("data-clones");
+
+        if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
+          if (existingData[textInput.name])
+            textInput.value = existingData[textInput.name];
+        }
+      });
+
+      const select = form.querySelectorAll("select");
+      select.forEach((select) => {
+        const parent2LevelsUp = select.parentElement.parentElement;
+        const parent2LevelsUpAttrValue =
+          parent2LevelsUp.getAttribute("data-clones");
+
+        if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
+          if (existingData[select.name])
+            select.value = existingData[select.name];
+        }
+      });
+    };
+
+    displayFlatData();
   };
 
   const initializeLocalStorage = async () => {
