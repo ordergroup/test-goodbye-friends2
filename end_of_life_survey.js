@@ -41,43 +41,43 @@ document.addEventListener("DOMContentLoaded", async function () {
             const inputs = clone.querySelectorAll("input");
             inputs.forEach((input) => {
               if (data[input.name]) input.value = data[input.name];
-              input.addEventListener("input", () => {
-                console.log("Input NODE Changed:", input.name, input.value);
-                const existingData =
-                  JSON.parse(localStorage.getItem("surveyData")) || {};
-                const arr = existingData[attrValue] || [];
-                console.log({ index });
+              // input.addEventListener("input", () => {
+              //   console.log("Input NODE Changed:", input.name, input.value);
+              //   const existingData =
+              //     JSON.parse(localStorage.getItem("surveyData")) || {};
+              //   const arr = existingData[attrValue] || [];
+              //   console.log({ index });
 
-                arr[index] = { ...arr[index], [input.name]: input.value };
+              //   arr[index] = { ...arr[index], [input.name]: input.value };
 
-                saveToLocalStorage(attrValue, arr);
-              });
+              //   saveToLocalStorage(attrValue, arr);
+              // });
             });
 
             const selects = clone.querySelectorAll("select");
             selects.forEach((select) => {
               if (data[select.name]) select.value = data[select.name];
-              select.addEventListener("input", () => {
-                console.log("Select NODE Changed:", select.name, select.value);
-                const existingData =
-                  JSON.parse(localStorage.getItem("surveyData")) || {};
-                const arr = existingData[attrValue] || [];
-                console.log(arr);
+              // select.addEventListener("input", () => {
+              //   console.log("Select NODE Changed:", select.name, select.value);
+              //   const existingData =
+              //     JSON.parse(localStorage.getItem("surveyData")) || {};
+              //   const arr = existingData[attrValue] || [];
+              //   console.log(arr);
 
-                arr[index] = { ...arr[index], [select.name]: select.value };
+              //   arr[index] = { ...arr[index], [select.name]: select.value };
 
-                saveToLocalStorage(attrValue, arr);
-              });
+              //   saveToLocalStorage(attrValue, arr);
+              // });
             });
 
-            const removeButton = clone.querySelector(
-              '[data-form="remove-clone"]'
-            );
-            removeButton.addEventListener("click", () => {
-              if (wrapper.children.length === 1) return;
-              console.log("Remove CLONE button clicked");
-              removeItem(attrValue, index, clone);
-            });
+            // const removeButton = clone.querySelector(
+            //   '[data-form="remove-clone"]'
+            // );
+            // removeButton.addEventListener("click", () => {
+            //   if (wrapper.children.length === 1) return;
+            //   console.log("Remove CLONE button clicked");
+            //   removeItem(attrValue, index, clone);
+            // });
           }
         });
       });
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Initialized Local Storage:", memberJson.data);
 
     lastSyncedData = JSON.stringify(memberJson.data);
-    displaySelectedData();
+    // displaySelectedData();
   };
 
   const saveToLocalStorage = (key, value) => {
@@ -162,13 +162,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   };
 
   const addListeners = () => {
-    // const backButtons = form.querySelectorAll('[data-form="back-btn"]');
-    // backButtons.forEach((button) => {
-    //   button.addEventListener("click", () => {
-    //     console.log("Back button clicked");
-    //     displaySelectedData();
-    //   });
-    // });
+    const form = document.getElementById("End-of-life-survey-1-SK");
 
     const nestedSteps = [];
 
@@ -305,8 +299,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v1");
+  console.log("v2");
   await initializeLocalStorage();
+  displaySelectedData();
   addListeners();
   startDataSync();
 });
