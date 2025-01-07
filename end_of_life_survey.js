@@ -67,79 +67,79 @@ document.addEventListener("DOMContentLoaded", async function () {
   };
 
   // Funkcja, która nasłuchuje zmiany w data-clone-wrapper
-  function observeCloneWrapper(wrapperSelector) {
-    // Znajdź wszystkie wrappery z atrybutem data-clone-wrapper
-    const wrappers = document.querySelectorAll(wrapperSelector);
+  // function observeCloneWrapper(wrapperSelector) {
+  //   // Znajdź wszystkie wrappery z atrybutem data-clone-wrapper
+  //   const wrappers = document.querySelectorAll(wrapperSelector);
 
-    wrappers.forEach((wrapper) => {
-      const attrValue = wrapper.getAttribute("data-clone-wrapper");
-      // console.log(attrValue);
+  //   wrappers.forEach((wrapper) => {
+  //     const attrValue = wrapper.getAttribute("data-clone-wrapper");
+  //     // console.log(attrValue);
 
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === "childList") {
-            const addedNodes = Array.from(mutation.addedNodes);
-            const removedNodes = Array.from(mutation.removedNodes);
+  //     const observer = new MutationObserver((mutations) => {
+  //       mutations.forEach((mutation) => {
+  //         if (mutation.type === "childList") {
+  //           const addedNodes = Array.from(mutation.addedNodes);
+  //           const removedNodes = Array.from(mutation.removedNodes);
 
-            if (addedNodes.length > 0) {
-              console.log("Dodano nowe elementy:", addedNodes);
-              addedNodes.forEach((node) => {
-                const parent = node.parentNode;
-                console.log(parent);
-                const siblingCount = parent.children.length;
-                console.log(siblingCount);
-                const currentIndex = siblingCount - 1;
+  //           if (addedNodes.length > 0) {
+  //             console.log("Dodano nowe elementy:", addedNodes);
+  //             addedNodes.forEach((node) => {
+  //               const parent = node.parentNode;
+  //               console.log(parent);
+  //               const siblingCount = parent.children.length;
+  //               console.log(siblingCount);
+  //               const currentIndex = siblingCount - 1;
 
-                const removeButton = node.querySelector(
-                  '[data-form="remove-clone"]'
-                );
-                removeButton.addEventListener("click", () => {
-                  console.log("Remove CLONE button clicked");
-                  const existingData =
-                    JSON.parse(localStorage.getItem("surveyData")) || {};
-                  const arr = existingData[attrValue] || [];
-                  arr.splice(currentIndex, 1);
-                  saveToLocalStorage(attrValue, arr);
-                  node.remove();
-                });
+  //               const removeButton = node.querySelector(
+  //                 '[data-form="remove-clone"]'
+  //               );
+  //               removeButton.addEventListener("click", () => {
+  //                 console.log("Remove CLONE button clicked");
+  //                 const existingData =
+  //                   JSON.parse(localStorage.getItem("surveyData")) || {};
+  //                 const arr = existingData[attrValue] || [];
+  //                 arr.splice(currentIndex, 1);
+  //                 saveToLocalStorage(attrValue, arr);
+  //                 node.remove();
+  //               });
 
-                const inputs = node.querySelectorAll("input");
-                console.log(inputs);
-                inputs.forEach((input) => {
-                  input.addEventListener("input", () => {
-                    console.log("Input NODE Changed:", input.name, input.value);
-                    const existingData =
-                      JSON.parse(localStorage.getItem("surveyData")) || {};
-                    const arr = existingData[attrValue] || [];
-                    console.log(arr);
+  //               const inputs = node.querySelectorAll("input");
+  //               console.log(inputs);
+  //               inputs.forEach((input) => {
+  //                 input.addEventListener("input", () => {
+  //                   console.log("Input NODE Changed:", input.name, input.value);
+  //                   const existingData =
+  //                     JSON.parse(localStorage.getItem("surveyData")) || {};
+  //                   const arr = existingData[attrValue] || [];
+  //                   console.log(arr);
 
-                    arr[currentIndex] = {
-                      ...arr[currentIndex],
-                      [input.name]: input.value,
-                    };
+  //                   arr[currentIndex] = {
+  //                     ...arr[currentIndex],
+  //                     [input.name]: input.value,
+  //                   };
 
-                    saveToLocalStorage(attrValue, arr);
-                  });
-                });
-              });
-            }
+  //                   saveToLocalStorage(attrValue, arr);
+  //                 });
+  //               });
+  //             });
+  //           }
 
-            if (removedNodes.length > 0) {
-              console.log("Usunięto elementy:", removedNodes);
-            }
-          }
-        });
-      });
+  //           if (removedNodes.length > 0) {
+  //             console.log("Usunięto elementy:", removedNodes);
+  //           }
+  //         }
+  //       });
+  //     });
 
-      // Konfiguracja obserwatora
-      observer.observe(wrapper, {
-        childList: true, // Obserwuj zmiany w dzieciach
-        subtree: false, // Nie schodź w głąb kolejnych poziomów
-      });
-    });
-  }
+  //     // Konfiguracja obserwatora
+  //     observer.observe(wrapper, {
+  //       childList: true, // Obserwuj zmiany w dzieciach
+  //       subtree: false, // Nie schodź w głąb kolejnych poziomów
+  //     });
+  //   });
+  // }
 
-  observeCloneWrapper("[data-clone-wrapper]");
+  // observeCloneWrapper("[data-clone-wrapper]");
 
   const addListeners = () => {
     const backButtons = form.querySelectorAll('[data-form="back-btn"]');
@@ -152,16 +152,19 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const nestedSteps = [];
 
-    const dataCloneWrappers = form.querySelectorAll("[data-clone-wrapper]");
+    const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
     dataCloneWrappers.forEach((wrapper) => {
-      const attrValue = wrapper.getAttribute("data-clone-wrapper");
+      const attrValue = wrapper.getAttribute("data-clones-wrapper");
       nestedSteps.push(attrValue);
 
-      const addNewButton = form.querySelector(`[data-add-new="${attrValue}"]`);
+      const addNewButton = form.querySelector(`[data-add-news="${attrValue}"]`);
       const removeButton = wrapper.querySelector('[data-form="remove-clone"]');
 
       addNewButton.addEventListener("click", () => {
         console.log("Add new button clicked", attrValue);
+        // clone data-clone element that is inside data-clones-wrapper
+        const clone = wrapper.querySelector("[data-clone]").cloneNode(true);
+        wrapper.appendChild(clone);
       });
 
       // removeButton.addEventListener("click", () => {
