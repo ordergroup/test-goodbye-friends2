@@ -194,11 +194,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         removeButton.addEventListener("click", () => {
           console.log("Remove CLONE button clicked");
           if (wrapper.children.length === 1) return;
+          const indexOfClone = Array.from(wrapper.children).indexOf(clone);
 
           const existingData =
             JSON.parse(localStorage.getItem("surveyData")) || {};
           const arr = existingData[attrValue] || [];
-          arr.splice(0, 1);
+          arr.splice(indexOfClone, 1);
           saveToLocalStorage(attrValue, arr);
           clone.remove();
         });
@@ -279,7 +280,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v6");
+  console.log("v1");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
