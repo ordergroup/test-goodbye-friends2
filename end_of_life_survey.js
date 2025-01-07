@@ -186,70 +186,73 @@ document.addEventListener("DOMContentLoaded", async function () {
       addNewButton.addEventListener("click", () => {
         const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
         wrapper.appendChild(clone);
-
-        const inputs = clone.querySelectorAll("input");
-        inputs.forEach((input) => {
-          input.value = "";
-          input.addEventListener("input", () => {
-            const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-            console.log({ indexOfClone });
-            console.log("Input NODE Changed:", input.name, input.value);
-            const existingData =
-              JSON.parse(localStorage.getItem("surveyData")) || {};
-            const arr = existingData[attrValue] || [];
-            console.log(arr);
-
-            arr[indexOfClone] = {
-              ...arr[indexOfClone],
-              [input.name]: input.value,
-            };
-
-            saveToLocalStorage(attrValue, arr);
-          });
-        });
-
-        const selects = clone.querySelectorAll("select");
-        selects.forEach((select) => {
-          select.value = "";
-          select.addEventListener("input", () => {
-            const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-            console.log({ indexOfClone });
-            console.log("Select NODE Changed:", select.name, select.value);
-            const existingData =
-              JSON.parse(localStorage.getItem("surveyData")) || {};
-            const arr = existingData[attrValue] || [];
-            console.log(arr);
-
-            arr[indexOfClone] = {
-              ...arr[indexOfClone],
-              [select.name]: select.value,
-            };
-
-            saveToLocalStorage(attrValue, arr);
-          });
-        });
-
-        const removeButton = clone.querySelector('[data-form="remove-clone"]');
-        removeButton.addEventListener("click", () => {
-          if (wrapper.children.length === 1) return;
-          console.log("Remove CLONE button clicked");
-          const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-          removeItem(attrValue, indexOfClone, clone);
-        });
-
         addListeners();
+
+        // const inputs = clone.querySelectorAll("input");
+        // inputs.forEach((input) => {
+        //   input.value = "";
+        //   input.addEventListener("input", () => {
+        //     const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+        //     console.log({ indexOfClone });
+        //     console.log("Input NODE Changed:", input.name, input.value);
+        //     const existingData =
+        //       JSON.parse(localStorage.getItem("surveyData")) || {};
+        //     const arr = existingData[attrValue] || [];
+        //     console.log(arr);
+
+        //     arr[indexOfClone] = {
+        //       ...arr[indexOfClone],
+        //       [input.name]: input.value,
+        //     };
+
+        //     saveToLocalStorage(attrValue, arr);
+        //   });
+        // });
+
+        // const selects = clone.querySelectorAll("select");
+        // selects.forEach((select) => {
+        //   select.value = "";
+        //   select.addEventListener("input", () => {
+        //     const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+        //     console.log({ indexOfClone });
+        //     console.log("Select NODE Changed:", select.name, select.value);
+        //     const existingData =
+        //       JSON.parse(localStorage.getItem("surveyData")) || {};
+        //     const arr = existingData[attrValue] || [];
+        //     console.log(arr);
+
+        //     arr[indexOfClone] = {
+        //       ...arr[indexOfClone],
+        //       [select.name]: select.value,
+        //     };
+
+        //     saveToLocalStorage(attrValue, arr);
+        //   });
+        // });
+
+        // const removeButton = clone.querySelector('[data-form="remove-clone"]');
+        // removeButton.addEventListener("click", () => {
+        //   if (wrapper.children.length === 1) return;
+        //   console.log("Remove CLONE button clicked");
+        //   const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+        //   removeItem(attrValue, indexOfClone, clone);
+        // });
       });
     });
 
     const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
     removeButtons.forEach((button) => {
+      const wrapper = button.parentElement.parentElement.parentElement;
+      const indexOfClone = Array.from(wrapper.children).indexOf(
+        button.parentElement
+      );
       const element = button.parentElement.parentElement.parentElement;
       const attrValue = element.getAttribute("data-clones");
 
       button.addEventListener("click", () => {
         if (removeButtons.length === 1) return;
         console.log("Remove NORMAL button clicked");
-        removeItem(attrValue, 0, element);
+        removeItem(attrValue, indexOfClone, element);
       });
     });
 
@@ -257,6 +260,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type radio and text
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
+      const wrapper = input.parentElement.parentElement.parentElement;
+      const indexOfClone = Array.from(wrapper.children).indexOf(
+        input.parentElement
+      );
       const parent2LevelsUp = input.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
         parent2LevelsUp.getAttribute("data-clones");
@@ -272,7 +279,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             JSON.parse(localStorage.getItem("surveyData")) || {};
           const arr = existingData[parent2LevelsUpAttrValue] || [];
           console.log(arr);
-          arr[0] = { ...arr[0], [input.name]: input.value };
+          arr[indexOfClone] = {
+            ...arr[indexOfClone],
+            [input.name]: input.value,
+          };
           saveToLocalStorage(parent2LevelsUpAttrValue, arr);
         });
       }
@@ -281,6 +291,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // type select
     const selects = form.querySelectorAll("select");
     selects.forEach((select) => {
+      const wrapper = select.parentElement.parentElement.parentElement;
+      const indexOfClone = Array.from(wrapper.children).indexOf(
+        select.parentElement
+      );
       const parent2LevelsUp = select.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
         parent2LevelsUp.getAttribute("data-clones");
@@ -296,7 +310,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             JSON.parse(localStorage.getItem("surveyData")) || {};
           const arr = existingData[parent2LevelsUpAttrValue] || [];
           console.log(arr);
-          arr[0] = { ...arr[0], [select.name]: select.value };
+          arr[indexOfClone] = {
+            ...arr[indexOfClone],
+            [select.name]: select.value,
+          };
           saveToLocalStorage(parent2LevelsUpAttrValue, arr);
         });
       }
