@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v23");
+  console.log("v4");
   await initializeLocalStorage();
   displaySelectedData();
   addListeners();
