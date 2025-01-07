@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       addNewButton.addEventListener("click", () => {
         console.log("Add new button clicked", attrValue);
         // clone data-clone element that is inside data-clones-wrapper
-        const clone = wrapper.querySelector("[data-clone]").cloneNode(true);
+        const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
         wrapper.appendChild(clone);
         //add onchange listeners to inputs of clone
         const inputs = clone.querySelectorAll("input");
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v9");
+  console.log("v1");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
