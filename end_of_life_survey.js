@@ -171,12 +171,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     form.querySelectorAll("select").forEach((select) => {
       select.removeEventListener("input", () => {});
     });
-    form.querySelectorAll('[data-form="remove-clone"]').forEach((button) => {
-      button.removeEventListener("click", () => {});
-    });
-    form.querySelectorAll("[data-add-news]").forEach((button) => {
-      button.removeEventListener("click", () => {});
-    });
 
     const nestedSteps = [];
 
@@ -195,78 +189,34 @@ document.addEventListener("DOMContentLoaded", async function () {
       const attrValue = wrapper.getAttribute("data-clones-wrapper");
       nestedSteps.push(attrValue);
 
-      const addNewButton = form.querySelector(`[data-add-news="${attrValue}"]`);
+      const addNewButton = wrapper.querySelector(
+        `[data-add-news="${attrValue}"]`
+      );
 
-      addNewButton.addEventListener("click", () => {
+      const handleAddNew = () => {
         const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
         wrapper.appendChild(clone);
         addListeners();
+      };
 
-        // const inputs = clone.querySelectorAll("input");
-        // inputs.forEach((input) => {
-        //   input.value = "";
-        //   input.addEventListener("input", () => {
-        //     const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-        //     console.log({ indexOfClone });
-        //     console.log("Input NODE Changed:", input.name, input.value);
-        //     const existingData =
-        //       JSON.parse(localStorage.getItem("surveyData")) || {};
-        //     const arr = existingData[attrValue] || [];
-        //     console.log(arr);
+      addNewButton.removeEventListener("click", handleAddNew);
+      addNewButton.addEventListener("click", handleAddNew);
 
-        //     arr[indexOfClone] = {
-        //       ...arr[indexOfClone],
-        //       [input.name]: input.value,
-        //     };
-
-        //     saveToLocalStorage(attrValue, arr);
-        //   });
-        // });
-
-        // const selects = clone.querySelectorAll("select");
-        // selects.forEach((select) => {
-        //   select.value = "";
-        //   select.addEventListener("input", () => {
-        //     const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-        //     console.log({ indexOfClone });
-        //     console.log("Select NODE Changed:", select.name, select.value);
-        //     const existingData =
-        //       JSON.parse(localStorage.getItem("surveyData")) || {};
-        //     const arr = existingData[attrValue] || [];
-        //     console.log(arr);
-
-        //     arr[indexOfClone] = {
-        //       ...arr[indexOfClone],
-        //       [select.name]: select.value,
-        //     };
-
-        //     saveToLocalStorage(attrValue, arr);
-        //   });
-        // });
-
-        // const removeButton = clone.querySelector('[data-form="remove-clone"]');
-        // removeButton.addEventListener("click", () => {
-        //   if (wrapper.children.length === 1) return;
-        //   console.log("Remove CLONE button clicked");
-        //   const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-        //   removeItem(attrValue, indexOfClone, clone);
-        // });
-      });
-    });
-
-    const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
-    removeButtons.forEach((button) => {
-      const wrapper = button.parentElement.parentElement.parentElement;
-      const indexOfClone = Array.from(wrapper.children).indexOf(
-        button.parentElement
+      const removeButtons = wrapper.querySelectorAll(
+        '[data-form="remove-clone"]'
       );
-      const element = button.parentElement.parentElement.parentElement;
-      const attrValue = element.getAttribute("data-clones");
-
-      button.addEventListener("click", () => {
-        if (removeButtons.length === 1) return;
-        console.log("Remove NORMAL button clicked");
-        removeItem(attrValue, indexOfClone, element);
+      removeButtons.forEach((button) => {
+        const indexOfClone = Array.from(wrapper.children).indexOf(
+          button.parentElement
+        );
+        const element = button.parentElement;
+        const handleRemove = () => {
+          if (wrapper.children.length === 1) return;
+          console.log("Remove CLONE button clicked");
+          removeItem(attrValue, indexOfClone, element);
+        };
+        button.removeEventListener("click", handleRemove);
+        button.addEventListener("click", handleRemove);
       });
     });
 
