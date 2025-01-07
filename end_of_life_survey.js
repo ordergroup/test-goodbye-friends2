@@ -204,12 +204,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const indexOfClone = Array.from(wrapper.children).indexOf(
           button.parentElement
         );
-        const element = button.parentElement;
+        const clone = button.parentElement.parentElement.parentElement;
         const handleRemove = () => {
           if (wrapper.children.length === 1) return;
           console.log("Remove CLONE button clicked");
           console.log({ element, indexOfClone });
-          removeItem(attrValue, indexOfClone, element);
+          removeItem(attrValue, indexOfClone, clone);
         };
         button.removeEventListener("click", handleRemove);
         button.addEventListener("click", handleRemove);
