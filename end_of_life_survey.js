@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const removeButtons = form.querySelectorAll('[data-form="remove-clone"]');
     removeButtons.forEach((button) => {
       const clone = button.parentElement.parentElement.parentElement;
-      const attrValue = clone.getAttribute("data-clone");
+      const attrValue = clone.getAttribute("data-clones");
 
       button.addEventListener("click", () => {
         console.log("Remove NORMAL button clicked");
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     inputs.forEach((input) => {
       const parent2LevelsUp = input.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
-        parent2LevelsUp.getAttribute("data-clone");
+        parent2LevelsUp.getAttribute("data-clones");
       if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
         input.addEventListener("input", () => {
           console.log("Input Changed:", input.name, input.value);
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     selects.forEach((select) => {
       const parent2LevelsUp = select.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
-        parent2LevelsUp.getAttribute("data-clone");
+        parent2LevelsUp.getAttribute("data-clones");
       if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
         select.addEventListener("input", () => {
           console.log("Select Changed:", select.name, select.value);
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v1");
+  console.log("v2");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
