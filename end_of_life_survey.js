@@ -13,21 +13,40 @@ document.addEventListener("DOMContentLoaded", async function () {
     const displayNestedData = () => {
       const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
       dataCloneWrappers.forEach((wrapper) => {
+        //we need to create clones and append them based on the data and then display data in clones
         const attrValue = wrapper.getAttribute("data-clones-wrapper");
         nestedSteps.push(attrValue);
-        const data = existingData[attrValue] || [{}];
-        const clones = wrapper.querySelectorAll("[data-clones]");
-        clones.forEach((clone, index) => {
-          const inputs = clone.querySelectorAll("input");
-          inputs.forEach((input) => {
-            input.value = data[index][input.name] || "";
-          });
 
-          const selects = clone.querySelectorAll("select");
-          selects.forEach((select) => {
-            if (data[index][select.name])
-              select.value = data[index][select.name];
-          });
+        const existingData =
+          JSON.parse(localStorage.getItem("surveyData")) || {};
+        const arr = existingData[attrValue] || [];
+        arr.forEach((data, index) => {
+          if (index === 0) {
+            const inputs = wrapper.querySelectorAll("input");
+            inputs.forEach((input) => {
+              if (data[input.name]) input.value = data[input.name];
+            });
+
+            const selects = wrapper.querySelectorAll("select");
+            selects.forEach((select) => {
+              if (data[select.name]) select.value = data[select.name];
+            });
+          } else {
+            const clone = wrapper
+              .querySelector("[data-clones]")
+              .cloneNode(true);
+            wrapper.appendChild(clone);
+
+            const inputs = clone.querySelectorAll("input");
+            inputs.forEach((input) => {
+              if (data[input.name]) input.value = data[input.name];
+            });
+
+            const selects = clone.querySelectorAll("select");
+            selects.forEach((select) => {
+              if (data[select.name]) select.value = data[select.name];
+            });
+          }
         });
       });
     };
@@ -57,8 +76,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       });
 
-      const select = form.querySelectorAll("select");
-      select.forEach((select) => {
+      const selects = form.querySelectorAll("selects");
+      selects.forEach((select) => {
         const parent2LevelsUp = select.parentElement.parentElement;
         const parent2LevelsUpAttrValue =
           parent2LevelsUp.getAttribute("data-clones");
