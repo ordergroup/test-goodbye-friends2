@@ -167,11 +167,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         wrapper.appendChild(clone);
         //add onchange listeners to inputs of clone
         const inputs = clone.querySelectorAll("input");
-        const indexOfClone = Array.from(wrapper.children).indexOf(clone);
-        console.log({ indexOfClone });
 
         inputs.forEach((input) => {
           input.addEventListener("input", () => {
+            const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+            console.log({ indexOfClone });
             console.log("Input NODE Changed:", input.name, input.value);
             const existingData =
               JSON.parse(localStorage.getItem("surveyData")) || {};
@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v4");
+  console.log("v5");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
