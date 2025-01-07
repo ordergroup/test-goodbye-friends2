@@ -165,6 +165,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         // clone data-clone element that is inside data-clones-wrapper
         const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
         wrapper.appendChild(clone);
+        const indexOfClone = Array.from(wrapper.children).indexOf(clone);
+        console.log({ indexOfClone });
         //add onchange listeners to inputs of clone
         const inputs = clone.querySelectorAll("input");
         inputs.forEach((input) => {
@@ -175,7 +177,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             const arr = existingData[attrValue] || [];
             console.log(arr);
 
-            arr.push({ [input.name]: input.value });
+            arr[indexOfClone] = {
+              ...arr[indexOfClone],
+              [input.name]: input.value,
+            };
 
             saveToLocalStorage(attrValue, arr);
           });
@@ -269,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v2");
+  console.log("v3");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
