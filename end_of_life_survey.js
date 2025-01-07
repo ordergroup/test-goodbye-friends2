@@ -189,9 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       const attrValue = wrapper.getAttribute("data-clones-wrapper");
       nestedSteps.push(attrValue);
 
-      const addNewButton = wrapper.querySelector(
-        `[data-add-news="${attrValue}"]`
-      );
+      const addNewButton = form.querySelector(`[data-add-news="${attrValue}"]`);
 
       const handleAddNew = () => {
         const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
