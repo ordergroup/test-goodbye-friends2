@@ -211,6 +211,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const handleRemove = () => {
           if (wrapper.children.length === 1) return;
           console.log("Remove CLONE button clicked");
+          console.log({ element, indexOfClone });
           removeItem(attrValue, indexOfClone, element);
         };
         button.removeEventListener("click", handleRemove);
@@ -282,7 +283,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v4");
+  console.log("v1");
   await initializeLocalStorage();
   displaySelectedData();
   addListeners();
