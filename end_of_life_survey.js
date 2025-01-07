@@ -165,6 +165,33 @@ document.addEventListener("DOMContentLoaded", async function () {
         // clone data-clone element that is inside data-clones-wrapper
         const clone = wrapper.querySelector("[data-clone]").cloneNode(true);
         wrapper.appendChild(clone);
+        //add onchange listeners to inputs of clone
+        const inputs = clone.querySelectorAll("input");
+        inputs.forEach((input) => {
+          input.addEventListener("input", () => {
+            console.log("Input NODE Changed:", input.name, input.value);
+            const existingData =
+              JSON.parse(localStorage.getItem("surveyData")) || {};
+            const arr = existingData[attrValue] || [];
+            console.log(arr);
+
+            arr.push({ [input.name]: input.value });
+
+            saveToLocalStorage(attrValue, arr);
+          });
+        });
+
+        //add remove button listener to clone
+        const removeButton = clone.querySelector('[data-form="remove-clone"]');
+        removeButton.addEventListener("click", () => {
+          console.log("Remove CLONE button clicked");
+          const existingData =
+            JSON.parse(localStorage.getItem("surveyData")) || {};
+          const arr = existingData[attrValue] || [];
+          arr.splice(0, 1);
+          saveToLocalStorage(attrValue, arr);
+          clone.remove();
+        });
       });
 
       // removeButton.addEventListener("click", () => {
@@ -242,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v8");
+  console.log("v9");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
