@@ -172,6 +172,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       arr.splice(indexToRemove, 1);
       saveToLocalStorage(attrValue, arr);
       element.remove();
+
+      addListeners();
     };
 
     const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
@@ -234,6 +236,8 @@ document.addEventListener("DOMContentLoaded", async function () {
           const indexOfClone = Array.from(wrapper.children).indexOf(clone);
           removeItem(attrValue, indexOfClone, clone);
         });
+
+        addListeners();
       });
     });
 
@@ -299,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v2");
+  console.log("v23");
   await initializeLocalStorage();
   displaySelectedData();
   addListeners();
