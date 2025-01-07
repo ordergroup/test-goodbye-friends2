@@ -169,6 +169,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputs = clone.querySelectorAll("input");
 
         inputs.forEach((input) => {
+          //clear input value
+          input.value = "";
           input.addEventListener("input", () => {
             const indexOfClone = Array.from(wrapper.children).indexOf(clone);
             console.log({ indexOfClone });
@@ -191,6 +193,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const removeButton = clone.querySelector('[data-form="remove-clone"]');
         removeButton.addEventListener("click", () => {
           console.log("Remove CLONE button clicked");
+          if (wrapper.children.length === 1) return;
+
           const existingData =
             JSON.parse(localStorage.getItem("surveyData")) || {};
           const arr = existingData[attrValue] || [];
@@ -275,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   };
 
-  console.log("v5");
+  console.log("v6");
   await initializeLocalStorage();
   addListeners();
   startDataSync();
