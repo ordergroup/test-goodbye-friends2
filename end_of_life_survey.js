@@ -164,14 +164,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   const addListeners = () => {
     const form = document.getElementById("End-of-life-survey-1-SK");
 
-    // remove all listenrs first
-    form.querySelectorAll("input").forEach((input) => {
-      input.removeEventListener("input", () => {});
-    });
-    form.querySelectorAll("select").forEach((select) => {
-      select.removeEventListener("input", () => {});
-    });
-
     const nestedSteps = [];
 
     const removeItem = (attrValue, indexToRemove, element) => {
@@ -192,7 +184,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       const addNewButton = form.querySelector(`[data-add-news="${attrValue}"]`);
 
       const handleAddNew = () => {
-        const clone = wrapper.querySelector("[data-clones]").cloneNode(true);
+        const clone = wrapper
+          .querySelectorAll("[data-clones]")[0]
+          .cloneNode(true);
+        clone.querySelectorAll("input").forEach((input) => {
+          input.value = "";
+        });
         wrapper.appendChild(clone);
         addListeners();
       };
