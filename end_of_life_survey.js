@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       const textInputs = form.querySelectorAll("input[type=text]");
       textInputs.forEach((textInput) => {
-        const parent2LevelsUp = input.parentElement.parentElement;
+        const parent2LevelsUp = textInput.parentElement.parentElement;
         const parent2LevelsUpAttrValue =
           parent2LevelsUp.getAttribute("data-clones");
 
