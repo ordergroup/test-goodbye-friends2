@@ -261,12 +261,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const inputs = form.querySelectorAll("input");
     inputs.forEach((input) => {
       const wrapper = input.parentElement.parentElement.parentElement;
-      const indexOfClone = Array.from(wrapper.children).indexOf(
-        input.parentElement
-      );
       const parent2LevelsUp = input.parentElement.parentElement;
       const parent2LevelsUpAttrValue =
         parent2LevelsUp.getAttribute("data-clones");
+      const indexOfClone = Array.from(wrapper.children).indexOf(
+        parent2LevelsUp
+      );
       if (!nestedSteps.includes(parent2LevelsUpAttrValue)) {
         input.addEventListener("input", () => {
           console.log("Input Changed:", input.name, input.value);
