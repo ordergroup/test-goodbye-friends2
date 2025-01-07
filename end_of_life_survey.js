@@ -187,6 +187,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const clone = wrapper
           .querySelectorAll("[data-clones]")[0]
           .cloneNode(true);
+
+        console.log({ clone });
         clone.querySelectorAll("input").forEach((input) => {
           input.value = "";
         });
