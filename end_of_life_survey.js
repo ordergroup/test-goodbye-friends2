@@ -13,13 +13,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     const displayNestedData = () => {
       const dataCloneWrappers = form.querySelectorAll("[data-clones-wrapper]");
       dataCloneWrappers.forEach((wrapper) => {
-        //we need to create clones and append them based on the data and then display data in clones
+        //we need to create clones and append them based on the data and then display data in clones and we need to add listeners to the clones (remove buttons, inputs, selects)
         const attrValue = wrapper.getAttribute("data-clones-wrapper");
         nestedSteps.push(attrValue);
 
         const existingData =
           JSON.parse(localStorage.getItem("surveyData")) || {};
         const arr = existingData[attrValue] || [];
+
         arr.forEach((data, index) => {
           if (index === 0) {
             const inputs = wrapper.querySelectorAll("input");
@@ -40,11 +41,42 @@ document.addEventListener("DOMContentLoaded", async function () {
             const inputs = clone.querySelectorAll("input");
             inputs.forEach((input) => {
               if (data[input.name]) input.value = data[input.name];
+              input.addEventListener("input", () => {
+                console.log("Input NODE Changed:", input.name, input.value);
+                const existingData =
+                  JSON.parse(localStorage.getItem("surveyData")) || {};
+                const arr = existingData[attrValue] || [];
+                console.log(arr);
+
+                arr[index] = { ...arr[index], [input.name]: input.value };
+
+                saveToLocalStorage(attrValue, arr);
+              });
             });
 
             const selects = clone.querySelectorAll("select");
             selects.forEach((select) => {
               if (data[select.name]) select.value = data[select.name];
+              select.addEventListener("input", () => {
+                console.log("Select NODE Changed:", select.name, select.value);
+                const existingData =
+                  JSON.parse(localStorage.getItem("surveyData")) || {};
+                const arr = existingData[attrValue] || [];
+                console.log(arr);
+
+                arr[index] = { ...arr[index], [select.name]: select.value };
+
+                saveToLocalStorage(attrValue, arr);
+              });
+            });
+
+            const removeButton = clone.querySelector(
+              '[data-form="remove-clone"]'
+            );
+            removeButton.addEventListener("click", () => {
+              if (wrapper.children.length === 1) return;
+              console.log("Remove CLONE button clicked");
+              removeItem(attrValue, index, clone);
             });
           }
         });
@@ -130,13 +162,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   };
 
   const addListeners = () => {
-    const backButtons = form.querySelectorAll('[data-form="back-btn"]');
-    backButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        console.log("Back button clicked");
-        displaySelectedData();
-      });
-    });
+    // const backButtons = form.querySelectorAll('[data-form="back-btn"]');
+    // backButtons.forEach((button) => {
+    //   button.addEventListener("click", () => {
+    //     console.log("Back button clicked");
+    //     displaySelectedData();
+    //   });
+    // });
 
     const nestedSteps = [];
 
