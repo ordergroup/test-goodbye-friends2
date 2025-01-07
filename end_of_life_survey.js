@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     removeButtons.forEach((button) => {
       const element = button.parentElement.parentElement.parentElement;
-      const attrValue = clone.getAttribute("data-clones");
+      const attrValue = element.getAttribute("data-clones");
 
       button.addEventListener("click", () => {
         if (removeButtons.length === 1) return;
